@@ -25,7 +25,7 @@ namespace Jobscraper.Data
         [NotNull]
         public string Content { get; set; }
 
-        [OneToMany]
+        [Ignore]
         public List<string> Keywords { get; set; }
 
         public Ad()
