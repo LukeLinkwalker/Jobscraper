@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Jobscraper.Scraping;
-using Jobscraper.Scraping.Events;
+using Jobscraper.Model.Scraping;
+using Jobscraper.Model.Scraping.Events;
 using SQLite;
 
-namespace Jobscraper.Data
+namespace Jobscraper.Model.Data
 {
     public class Database
     {
@@ -28,7 +28,8 @@ namespace Jobscraper.Data
 
         public void RegisterAdFetchedCallback(IScraper scraper)
         {
-            scraper.OnAdFetchingProgress += (s, e) => { 
+            scraper.OnAdFetchingProgress += (s, e) =>
+            {
                 AdFetchingProgressEvent pe = (AdFetchingProgressEvent)e;
                 connection.Insert(pe.fetchedAd);
             };

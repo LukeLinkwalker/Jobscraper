@@ -1,11 +1,11 @@
-﻿using Jobscraper.Data;
+﻿using Jobscraper.Model.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jobscraper.Scraping.Events
+namespace Jobscraper.Model.Scraping.Events
 {
     public class AdFetchingProgressEvent : EventArgs
     {

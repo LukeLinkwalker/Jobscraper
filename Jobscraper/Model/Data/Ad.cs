@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jobscraper.Data
+namespace Jobscraper.Model.Data
 {
     public class Ad
     {
@@ -30,11 +30,11 @@ namespace Jobscraper.Data
 
         public Ad()
         {
-            this.Title = string.Empty;
-            this.URL = string.Empty;
-            this.Timestamp = string.Empty;
-            this.Content = string.Empty;
-            this.Keywords = new List<string>();
+            Title = string.Empty;
+            URL = string.Empty;
+            Timestamp = string.Empty;
+            Content = string.Empty;
+            Keywords = new List<string>();
         }
 
         public DateTime getTimestamp()

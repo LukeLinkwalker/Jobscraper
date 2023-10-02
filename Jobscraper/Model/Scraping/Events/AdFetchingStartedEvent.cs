@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jobscraper.Scraping.Events
+namespace Jobscraper.Model.Scraping.Events
 {
     public class AdFetchingStartedEvent : EventArgs
     {
