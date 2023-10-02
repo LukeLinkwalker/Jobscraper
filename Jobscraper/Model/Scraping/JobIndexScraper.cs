@@ -3,6 +3,8 @@ using Jobscraper.Model.Scraping.Events;
 using PuppeteerSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -11,6 +13,8 @@ namespace Jobscraper.Model.Scraping
 {
     public class JobIndexScraper : IScraper
     {
+        private const string DEBUG_FILTER = "JOBINDEXSCRAPER";
+
         public event EventHandler OnInitStarted;
         public event EventHandler OnInitDone;
         public event EventHandler OnAdScrapingStarted;
@@ -26,12 +30,14 @@ namespace Jobscraper.Model.Scraping
         private DateTime _lastScraping;
         private Timer _scrapeTimer;
         private bool _initialized;
+        private Database _database;
 
-        public JobIndexScraper()
+        public JobIndexScraper(Database database)
         {
             _lastJobIndexVisit = DateTime.MinValue;
             _lastScraping = DateTime.MinValue;
             _initialized = false;
+            _database = database;
             IsRunning = false;
         }
 
@@ -78,6 +84,7 @@ namespace Jobscraper.Model.Scraping
 
             // Get number of pages to scrape
             int numberOfPagesToScrape = await FindNumberOfPages(false);
+            Debug.WriteLine(DEBUG_FILTER + " - Number of pages to scrape : " + numberOfPagesToScrape);
 
             // Get URLs of ads to scrape
             List<Ad> listOfAdsToScrape = new List<Ad>();
@@ -85,7 +92,20 @@ namespace Jobscraper.Model.Scraping
             {
                 List<Ad> listOfAds = await FetchAdListings(numberOfPagesToScrape);
                 listOfAdsToScrape.AddRange(listOfAds);
+
+                // Throttling visits to jobindex.dk
                 await Task.Delay(1000);
+            }
+            Debug.WriteLine(DEBUG_FILTER + " - Number of ads to scrape : " + listOfAdsToScrape.Count);
+
+            // Filter out known ads from ads to be scraped
+            for(int i = listOfAdsToScrape.Count - 1; i > 0; i -= 1)
+            {
+                if (_database.ContainsAd(listOfAdsToScrape[i].URL))
+                {
+                    Debug.WriteLine(DEBUG_FILTER + " - Removed ad from scraping because it is known");
+                    listOfAdsToScrape.Remove(listOfAdsToScrape[i]);
+                }
             }
 
             // Scrape each URL for ad content
@@ -134,8 +154,6 @@ namespace Jobscraper.Model.Scraping
                     result = int.Parse(paginationProperties[paginationProperties.Count - 2]);
                 }
             }
-
-            MessageBox.Show("Number of pages : " + result);
 
             return result;
         }

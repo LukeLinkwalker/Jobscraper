@@ -15,44 +15,37 @@ namespace Jobscraper.Model.Processing
         public event EventHandler OnAdProcessed;
         public event EventHandler OnAdsProcessed;
 
+        private Database _database;
         private List<Ad> _ads;
-        private List<Keyword> _keywords;
 
-        public SimpleProcessor(List<Ad> ads, List<Keyword> keywords)
+        public SimpleProcessor(Database database)
         {
-            _ads = ads;
-            _keywords = keywords;
+            _database = database; 
             ProcessAds();
         }
 
-        public void SetKeywords(List<string> keywords)
-        {
-
-        }
-
-        public void RegisterAdFetchedCallback(IScraper scraper)
+        public void SetAdFetchedCallback(IScraper scraper)
         {
             scraper.OnAdFetchingProgress += (s, e) =>
             {
                 AdFetchingProgressEvent pe = (AdFetchingProgressEvent)e;
                 ProcessAd(pe.fetchedAd);
-                _ads.Add(pe.fetchedAd);
             };
         }
 
-        public void RegisterKeywordsChangedCallback()
+        public void SetKeywordsChangedCallback()
         {
             // Use ProcessAds
         }
 
         private void ProcessAds()
         {
-            foreach (Ad ad in _ads)
+            foreach (Ad ad in _database.GetAds())
             {
                 string txt = ad.Content.ToLower();
                 ad.Keywords.Clear();
 
-                foreach (Keyword keyword in _keywords)
+                foreach (Keyword keyword in _database.GetKeywords())
                 {
                     if (txt.Contains(keyword.Text.ToLower()))
                     {
@@ -69,7 +62,7 @@ namespace Jobscraper.Model.Processing
             string txt = ad.Content.ToLower();
             ad.Keywords.Clear();
 
-            foreach (Keyword keyword in _keywords)
+            foreach (Keyword keyword in _database.GetKeywords())
             {
                 if (txt.Contains(keyword.Text.ToLower()))
                 {

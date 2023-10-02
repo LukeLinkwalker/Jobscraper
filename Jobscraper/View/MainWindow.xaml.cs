@@ -29,7 +29,9 @@ namespace Jobscraper
         {
             InitializeComponent();
 
-            var jobIndexScraper = new JobIndexScraper();
+            var database = new Database();
+
+            var jobIndexScraper = new JobIndexScraper(database);
 
             jobIndexScraper.OnInitStarted += (s, e) => {
                 MessageBox.Show("Started init!");
@@ -55,23 +57,16 @@ namespace Jobscraper
 
             jobIndexScraper.OnAdFetchingProgress += (s, e) => { 
                 AdFetchingProgressEvent pe = (AdFetchingProgressEvent)e;
-                //MessageBox.Show(pe.index + " : " + pe.fetchedAd.Title);
             };
 
-            var database = new Database();
-            database.RegisterAdFetchedCallback(jobIndexScraper);
+            
+            database.SetAdFetchedCallback(jobIndexScraper);
 
-            List<Ad> ads = database.connection.GetAllWithChildren<Ad>();
-            List<Keyword> keywords = database.connection.GetAllWithChildren<Keyword>();
-
-            var processor = new SimpleProcessor(ads, keywords);
-            processor.RegisterAdFetchedCallback(jobIndexScraper);
+            var processor = new SimpleProcessor(database);
+            processor.SetAdFetchedCallback(jobIndexScraper);
 
             jobIndexScraper.Init();
             jobIndexScraper.Start();
-
-
-            //MessageBox.Show("Ads in database : " + ads.Count);
         }
     }
 }
