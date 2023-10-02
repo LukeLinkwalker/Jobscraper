@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SQLite;
 
-namespace Jobscraper.Database
+namespace Jobscraper.Data
 {
     public class Database
     {
@@ -14,8 +14,12 @@ namespace Jobscraper.Database
         public Database()
         {
             SQLiteConnection _connection = new SQLiteConnection("data.db");
-            _connection.CreateTable<Scraper>();
             _connection.CreateTable<Ad>();
+        }
+
+        public bool ContainsAd(string URL)
+        {
+            return false;
         }
     }
 }
