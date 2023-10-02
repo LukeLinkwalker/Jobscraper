@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Jobscraper.Processing
 {
-    public class SimpleProcessor : IProcessor
+    public interface IProcessor
     {
-        public event EventHandler OnAdProcessed;
+        event EventHandler OnAdProcessed;
+        event EventHandler OnAdsProcessed;
     }
 }

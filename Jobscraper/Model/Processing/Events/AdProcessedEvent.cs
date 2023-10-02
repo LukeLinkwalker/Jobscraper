@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jobscraper.Scraping.Events
+namespace Jobscraper.Processing.Events
 {
-    public class AdProcessedEvent
+    public class AdProcessedEvent : EventArgs
     {
-        public Ad processedAd;
+        public readonly Ad processedAd;
 
         public AdProcessedEvent(Ad processedAd)
         {

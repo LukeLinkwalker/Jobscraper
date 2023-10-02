@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jobscraper.Scraping
+namespace Jobscraper.ViewModel
 {
-    public interface IScraper
+    public class MainWindowViewModel
     {
+        // Scraping status
+        // Keywords
+        // Ads
     }
 }

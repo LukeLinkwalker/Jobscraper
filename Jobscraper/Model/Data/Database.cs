@@ -26,7 +26,7 @@ namespace Jobscraper.Data
             return false;
         }
 
-        public void RegisterAdFetchedEvent(IScraper scraper)
+        public void RegisterAdFetchedCallback(IScraper scraper)
         {
             scraper.OnAdFetchingProgress += (s, e) => { 
                 AdFetchingProgressEvent pe = (AdFetchingProgressEvent)e;

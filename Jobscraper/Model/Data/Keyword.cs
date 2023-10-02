@@ -18,5 +18,7 @@ namespace Jobscraper.Data
         public Keyword(string text) { 
             this.Text = text;
         }
+
+        public Keyword() { }
     }
 }
