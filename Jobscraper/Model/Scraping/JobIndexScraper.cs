@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows;
 
 namespace Jobscraper.Model.Scraping
 {
@@ -65,6 +66,7 @@ namespace Jobscraper.Model.Scraping
 
                 if (currentTime.Subtract(_lastScraping).TotalMinutes > 60 || _lastScraping == DateTime.MinValue)
                 {
+                    _lastScraping = DateTime.Now;
                     Scrape();
                 }
             }
@@ -72,8 +74,6 @@ namespace Jobscraper.Model.Scraping
 
         private async void Scrape()
         {
-            _lastScraping = DateTime.Now;
-
             OnAdScrapingStarted?.Invoke(this, EventArgs.Empty);
 
             // Get number of pages to scrape
@@ -130,11 +130,12 @@ namespace Jobscraper.Model.Scraping
                 IElementHandle pagination = await page.QuerySelectorAsync(".pagination");
                 if (pagination != null)
                 {
-                    IElementHandle[] pageItemElements = await page.QuerySelectorAllAsync(".page-item");
-                    IJSHandle pageItemsHandle = await pageItemElements[pageItemElements.Length - 2].GetPropertyAsync("innerText");
-                    result = int.Parse(pageItemsHandle.RemoteObject.Value.ToString());
+                    List<string> paginationProperties = await page.QueryAllElementsAndProperties(".page-item", "innerText");
+                    result = int.Parse(paginationProperties[paginationProperties.Count - 2]);
                 }
             }
+
+            MessageBox.Show("Number of pages : " + result);
 
             return result;
         }
@@ -151,18 +152,14 @@ namespace Jobscraper.Model.Scraping
 
                 foreach (IElementHandle handle in JobListings)
                 {
+                    string titleString = await handle.QueryElementAndProperty("h4", "innerText");
                     IElementHandle titleElement = await handle.QuerySelectorAsync("h4");
-                    IJSHandle titleHandle = await titleElement.GetPropertyAsync("innerText");
-                    string titleString = titleHandle.RemoteObject.Value.ToString();
-
-                    IElementHandle linkElement = await titleElement.QuerySelectorAsync("a");
-                    IJSHandle linkHandle = await linkElement.GetPropertyAsync("href");
-                    string linkString = linkHandle.RemoteObject.Value.ToString();
+                    string urlString = await titleElement.QueryElementAndProperty("a", "href");
 
                     result.Add(new Ad()
                     {
                         Title = titleString,
-                        URL = linkString,
+                        URL = urlString,
                         Timestamp = DateTime.Now.ToString()
                     });
                 }
@@ -180,9 +177,7 @@ namespace Jobscraper.Model.Scraping
                 using (IPage page = await _browser.NewPageAsync())
                 {
                     await page.GoToAsync(URL);
-                    IElementHandle bodyElement = await page.QuerySelectorAsync("body");
-                    IJSHandle bodyHandle = await bodyElement.GetPropertyAsync("innerText");
-                    result = bodyHandle.RemoteObject.Value.ToString();
+                    result = await page.QueryElementAndProperty("body", "innerText");
 
                     // Throttling visits to jobindex.dk
                     if (URL.ToLower().Contains("jobindex.dk"))
