@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.Extensions.DependencyInjection;
 using JobScraper.View.Pages;
 using JobScraper.View.Components;
-using Jobscraper.Model.Processing;
-using Jobscraper.Model.Scraping;
-using Jobscraper.Model.Scraping.Events;
-using Jobscraper.Model.Data;
+using JobScraper.Model.Processing;
+using JobScraper.Model.Scraping;
+using JobScraper.Model.Scraping.Events;
+using JobScraper.Model.Data;
 
 namespace JobScraper
 {
@@ -59,15 +59,21 @@ namespace JobScraper
             //jobIndexScraper.Start();
 
             MainViewModel viewModel = new MainViewModel();
-            
+
+            EventCallback<KeywordArg> AddKeywordCallback = new EventCallback<KeywordArg>(null, (KeywordArg args) =>
+            {
+                viewModel.TriggerOnKeywordAdded(args.Keyword);
+            });
+
+            EventCallback<KeywordArg> RemoveKeywordCallback = new EventCallback<KeywordArg>(null, (KeywordArg args) =>
+            {
+                viewModel.TriggerOnKeywordRemoved(args.Keyword);
+            });
+
             FilterParams filterParams = new FilterParams
             {
-                AddKeywordCallback = new EventCallback<KeywordArg>(null, (KeywordArg args) => {
-                    viewModel.TriggerOnKeywordAdded(args.Keyword);
-                }),
-                RemoveKeywordCallback = new EventCallback<KeywordArg>(null, (KeywordArg args) => {
-                    viewModel.TriggerOnKeywordRemoved(args.Keyword);
-                })
+                AddKeywordCallback = AddKeywordCallback,
+                RemoveKeywordCallback = RemoveKeywordCallback
             };
             
             var services = new ServiceCollection();
@@ -77,8 +83,7 @@ namespace JobScraper
             blazorWebView.RootComponents.Add<Main>("#app",
                 new Dictionary<string, object?>
                 {
-                    { "ViewModel", viewModel },
-                    { "FilterParams", filterParams }
+                    { "ViewModel", viewModel }
                 });
         }
     }

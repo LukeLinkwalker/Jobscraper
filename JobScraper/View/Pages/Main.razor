@@ -6,7 +6,7 @@
         <div class="col-md-4 p-0">
             <div class="vh-100 d-flex flex-column">
                 <div class="flex-column flex-grow-1 text-center">
-                    <Filter ViewModel="ViewModel" FilterParams="FilterParams"/>
+                    <Filter ViewModel="ViewModel"/>
                 </div>
                 <div class="flex-column">
                     <div class="text-black text-center mt-3" style="height:50px">
@@ -38,8 +38,8 @@
     [Parameter]
     public MainViewModel ViewModel { get; set; }
 
-    [Parameter]
-    public FilterParams FilterParams { get; set; }
+    //[Parameter]
+    //public FilterParams FilterParams { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

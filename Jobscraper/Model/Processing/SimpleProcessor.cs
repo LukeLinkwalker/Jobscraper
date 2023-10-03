@@ -1,14 +1,14 @@
-﻿using Jobscraper.Model.Data;
-using Jobscraper.Model.Processing.Events;
-using Jobscraper.Model.Scraping;
-using Jobscraper.Model.Scraping.Events;
+﻿using JobScraper.Model.Data;
+using JobScraper.Model.Processing.Events;
+using JobScraper.Model.Scraping;
+using JobScraper.Model.Scraping.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jobscraper.Model.Processing
+namespace JobScraper.Model.Processing
 {
     public class SimpleProcessor : IProcessor
     {

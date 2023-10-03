@@ -7,12 +7,12 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Jobscraper.Model.Scraping;
-using Jobscraper.Model.Scraping.Events;
+using JobScraper.Model.Scraping;
+using JobScraper.Model.Scraping.Events;
 using SQLite;
 using SQLiteNetExtensions.Extensions;
 
-namespace Jobscraper.Model.Data
+namespace JobScraper.Model.Data
 {
     public class Database
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Jobscraper.Model.Scraping
+namespace JobScraper.Model.Scraping
 {
     public interface IScraper
     {

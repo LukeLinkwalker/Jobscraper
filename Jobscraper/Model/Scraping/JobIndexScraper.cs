@@ -1,5 +1,5 @@
-﻿using Jobscraper.Model.Data;
-using Jobscraper.Model.Scraping.Events;
+﻿using JobScraper.Model.Data;
+using JobScraper.Model.Scraping.Events;
 using PuppeteerSharp;
 using System;
 using System.Collections.Generic;
@@ -8,8 +8,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Timers;
+using JobScraper.Utils;
 
-namespace Jobscraper.Model.Scraping
+namespace JobScraper.Model.Scraping
 {
     public class JobIndexScraper : IScraper
     {

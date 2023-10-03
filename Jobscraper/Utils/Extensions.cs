@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static SQLite.SQLite3;
 
-namespace Jobscraper
+namespace JobScraper.Utils
 {
     public static class Extensions
     {

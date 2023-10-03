@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jobscraper.Model.Data
+namespace JobScraper.Model.Data
 {
     public class Keyword
     {
