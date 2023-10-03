@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,7 +37,16 @@ namespace Jobscraper.Model.Data
 
         public bool ContainsKeyword(string text)
         {
-            return false;
+            try
+            {
+                connection.Get<Keyword>((key) => key.Text.ToLower() == text.ToLower());
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public bool ContainsAd(string URL)

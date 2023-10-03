@@ -20,6 +20,9 @@ namespace Jobscraper.Model.Data
             Text = text;
         }
 
-        public Keyword() { }
+        public Keyword() 
+        {
+            Text = string.Empty;
+        }
     }
 }

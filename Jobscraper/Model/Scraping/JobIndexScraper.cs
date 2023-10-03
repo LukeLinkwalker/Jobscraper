@@ -150,8 +150,8 @@ namespace Jobscraper.Model.Scraping
                 IElementHandle pagination = await page.QuerySelectorAsync(".pagination");
                 if (pagination != null)
                 {
-                    List<string> paginationProperties = await page.QueryAllElementsAndProperties(".page-item", "innerText");
-                    result = int.Parse(paginationProperties[paginationProperties.Count - 2]);
+                    List<string> pageItemTexts = await page.QueryAllElementsAndProperties(".page-item", "innerText");
+                    result = int.Parse(pageItemTexts[pageItemTexts.Count - 2]);
                 }
             }
 
@@ -213,7 +213,8 @@ namespace Jobscraper.Model.Scraping
             }
             catch (NavigationException ex)
             {
-                // Failed to fetch ad sometimes due to timing out.. Emit event?
+                // Failed to fetch ad sometimes due to timing out.
+                // Emit event ?
             }
 
             return result;
