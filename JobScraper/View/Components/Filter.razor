@@ -16,9 +16,6 @@
     [Parameter]
     public MainViewModel ViewModel { get; set; }
 
-    //[Parameter]
-    //public FilterParams FilterParams { get; set; }
-
     public EventCallback<KeywordArg> AddKeywordCallback { get; set; }
 
     public EventCallback<KeywordArg> RemoveKeywordCallback { get; set; }
@@ -33,8 +30,6 @@
         ViewModel.OnKeywordAdded += KeywordAddedHandler;
 
         // Component -> ViewModel
-        //AddKeywordCallback = FilterParams.AddKeywordCallback;
-        //RemoveKeywordCallback = FilterParams.RemoveKeywordCallback; 
         AddKeywordCallback = ViewModel.AddKeywordCallback;
         RemoveKeywordCallback = ViewModel.RemoveKeywordCallback;
     }
@@ -44,12 +39,12 @@
     {
         KeywordArg args = new KeywordArg();
         args.Keyword = KeywordInput;
+        KeywordInput = string.Empty;
         await AddKeywordCallback.InvokeAsync(args);
     }
 
     private async void RemoveKeyword(string keyword)
     {
-        MessageBox.Show("Remove : " + keyword + " from UI");
         KeywordArg args = new KeywordArg();
         args.Keyword = keyword;
         await RemoveKeywordCallback.InvokeAsync(args);

@@ -47,7 +47,7 @@
             ClientSize = new Size(800, 450);
             Controls.Add(blazorWebView);
             Name = "Host";
-            Text = "Form1";
+            Text = "JobScraper";
             ResumeLayout(false);
         }
 

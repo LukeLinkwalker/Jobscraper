@@ -10,9 +10,7 @@
                 </div>
                 <div class="flex-column">
                     <div class="text-black text-center mt-3" style="height:50px">
-                        <div class="spinner-border align-middle" role="status">
-                        </div>
-                        <span class="align-middle" style="margin-left: 20px;">Scraping 1 of 200</span>
+                        <Status ViewModel="ViewModel"/>
                     </div>
                 </div>
             </div>
@@ -37,9 +35,6 @@
 @code {
     [Parameter]
     public MainViewModel ViewModel { get; set; }
-
-    //[Parameter]
-    //public FilterParams FilterParams { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

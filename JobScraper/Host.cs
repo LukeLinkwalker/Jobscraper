@@ -18,15 +18,17 @@ namespace JobScraper
         {
             InitializeComponent();
 
-            //var database = new Database();
-            //
-            //var jobIndexScraper = new JobIndexScraper(database);
-            //
-            //jobIndexScraper.OnInitStarted += (s, e) => {
+            var database = new Database();
+
+            var jobIndexScraper = new JobIndexScraper(database);
+
+            //jobIndexScraper.OnInitStarted += (s, e) =>
+            //{
             //    MessageBox.Show("Started init!");
             //};
             //
-            //jobIndexScraper.OnInitDone += (s, e) => {
+            //jobIndexScraper.OnInitDone += (s, e) =>
+            //{
             //    MessageBox.Show("Init done!");
             //};
             //
@@ -35,47 +37,37 @@ namespace JobScraper
             //    MessageBox.Show("Scraping started!");
             //};
             //
-            //jobIndexScraper.OnAdScrapingDone += (s, e) => {
+            //jobIndexScraper.OnAdScrapingDone += (s, e) =>
+            //{
             //    MessageBox.Show("Scraping done!");
             //};
             //
-            //jobIndexScraper.OnAdFetchingStarted += (s, e) => {
+            //jobIndexScraper.OnAdFetchingStarted += (s, e) =>
+            //{
             //    AdFetchingStartedEvent se = (AdFetchingStartedEvent)e;
             //    MessageBox.Show("Fetching ads started! : " + se.totalAds);
             //};
             //
-            //jobIndexScraper.OnAdFetchingProgress += (s, e) => {
+            //jobIndexScraper.OnAdFetchingProgress += (s, e) =>
+            //{
             //    AdFetchingProgressEvent pe = (AdFetchingProgressEvent)e;
             //    MessageBox.Show("Fetched ad : " + pe.fetchedAd.Title);
             //};
-            //
-            //
-            //database.SetAdFetchedCallback(jobIndexScraper);
-            //
-            //var processor = new SimpleProcessor(database);
-            //processor.SetAdFetchedCallback(jobIndexScraper);
-            //
-            //jobIndexScraper.Init();
-            //jobIndexScraper.Start();
+
+
+            database.SetAdFetchedCallback(jobIndexScraper);
+
+            var processor = new SimpleProcessor(database);
+            processor.SetAdFetchedCallback(jobIndexScraper);
 
             MainViewModel viewModel = new MainViewModel();
+            viewModel._scraper = jobIndexScraper;
+            viewModel._database = database;
+            viewModel._processor = processor;
+            viewModel.Init();
 
-            EventCallback<KeywordArg> AddKeywordCallback = new EventCallback<KeywordArg>(null, (KeywordArg args) =>
-            {
-                viewModel.TriggerOnKeywordAdded(args.Keyword);
-            });
 
-            EventCallback<KeywordArg> RemoveKeywordCallback = new EventCallback<KeywordArg>(null, (KeywordArg args) =>
-            {
-                viewModel.TriggerOnKeywordRemoved(args.Keyword);
-            });
 
-            FilterParams filterParams = new FilterParams
-            {
-                AddKeywordCallback = AddKeywordCallback,
-                RemoveKeywordCallback = RemoveKeywordCallback
-            };
-            
             var services = new ServiceCollection();
             services.AddWindowsFormsBlazorWebView();
             blazorWebView.HostPage = "wwwroot\\index.html";
@@ -85,6 +77,11 @@ namespace JobScraper
                 {
                     { "ViewModel", viewModel }
                 });
+
+
+
+            jobIndexScraper.Init();
+            jobIndexScraper.Start();
         }
     }
 }
