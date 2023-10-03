@@ -100,7 +100,7 @@ namespace JobScraper.Model.Scraping
             Debug.WriteLine(DEBUG_FILTER + " - Number of ads to scrape : " + listOfAdsToScrape.Count);
 
             // Filter out known ads from ads to be scraped
-            for(int i = listOfAdsToScrape.Count - 1; i > 0; i -= 1)
+            for(int i = listOfAdsToScrape.Count - 1; i >= 0; i -= 1)
             {
                 if (_database.ContainsAd(listOfAdsToScrape[i].URL))
                 {
