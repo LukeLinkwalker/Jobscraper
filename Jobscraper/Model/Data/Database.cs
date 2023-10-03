@@ -16,7 +16,7 @@ namespace Jobscraper.Model.Data
 {
     public class Database
     {
-        private SQLiteConnection connection = null;
+        private SQLiteConnection connection;
 
         public Database()
         {
@@ -25,28 +25,9 @@ namespace Jobscraper.Model.Data
             connection.CreateTable<Keyword>();
         }
 
-        public List<Keyword> GetKeywords()
-        {
-            return connection.GetAllWithChildren<Keyword>();
-        }
-
         public List<Ad> GetAds()
         {
             return connection.GetAllWithChildren<Ad>();
-        }
-
-        public bool ContainsKeyword(string text)
-        {
-            try
-            {
-                connection.Get<Keyword>((key) => key.Text.ToLower() == text.ToLower());
-            }
-            catch (System.InvalidOperationException ex)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         public bool ContainsAd(string URL)

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jobscraper", "Jobscraper.csproj", "{0AE6ADAA-85A4-4B76-8457-D1650A089640}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JobScraper", "JobScraper.csproj", "{D381D508-1B6B-4B95-9F5A-5AA8DE7349F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0AE6ADAA-85A4-4B76-8457-D1650A089640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0AE6ADAA-85A4-4B76-8457-D1650A089640}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0AE6ADAA-85A4-4B76-8457-D1650A089640}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0AE6ADAA-85A4-4B76-8457-D1650A089640}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D381D508-1B6B-4B95-9F5A-5AA8DE7349F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D381D508-1B6B-4B95-9F5A-5AA8DE7349F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D381D508-1B6B-4B95-9F5A-5AA8DE7349F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D381D508-1B6B-4B95-9F5A-5AA8DE7349F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {09D5D011-CA2D-4FE9-89E2-941635F3EF87}
+		SolutionGuid = {22C88D76-4FF4-45E8-820E-77526530A460}
 	EndGlobalSection
 EndGlobal

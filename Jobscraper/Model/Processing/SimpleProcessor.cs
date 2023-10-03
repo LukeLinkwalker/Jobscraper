@@ -17,10 +17,12 @@ namespace Jobscraper.Model.Processing
 
         private Database _database;
         private List<Ad> _ads;
+        private List<string> _keywords;
 
         public SimpleProcessor(Database database)
         {
             _database = database; 
+            _keywords = new List<string>();
             ProcessAds();
         }
 
@@ -45,11 +47,11 @@ namespace Jobscraper.Model.Processing
                 string txt = ad.Content.ToLower();
                 ad.Keywords.Clear();
 
-                foreach (Keyword keyword in _database.GetKeywords())
+                foreach (string keyword in _keywords)
                 {
-                    if (txt.Contains(keyword.Text.ToLower()))
+                    if (txt.Contains(keyword.ToLower()))
                     {
-                        ad.Keywords.Add(keyword.Text);
+                        ad.Keywords.Add(keyword);
                     }
                 }
             }
@@ -62,11 +64,11 @@ namespace Jobscraper.Model.Processing
             string txt = ad.Content.ToLower();
             ad.Keywords.Clear();
 
-            foreach (Keyword keyword in _database.GetKeywords())
+            foreach (string keyword in _keywords)
             {
-                if (txt.Contains(keyword.Text.ToLower()))
+                if (txt.Contains(keyword.ToLower()))
                 {
-                    ad.Keywords.Add(keyword.Text);
+                    ad.Keywords.Add(keyword);
                 }
             }
 

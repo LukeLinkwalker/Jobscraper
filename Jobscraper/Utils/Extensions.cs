@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using static SQLite.SQLite3;
 
 namespace Jobscraper

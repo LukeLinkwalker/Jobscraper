@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jobscraper.ViewModel
+namespace JobScraper.ViewModel.EventArgs
 {
-    public class MainWindowViewModel
+    public class KeywordArg
     {
-        // Scraping status
-        // Keywords
-        // Ads
+        public string Keyword { get; set; }
     }
 }

@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
+using System.Timers;
 
 namespace Jobscraper.Model.Scraping
 {
@@ -28,7 +28,7 @@ namespace Jobscraper.Model.Scraping
         private IBrowser _browser;
         private DateTime _lastJobIndexVisit;
         private DateTime _lastScraping;
-        private Timer _scrapeTimer;
+        private System.Timers.Timer _scrapeTimer;
         private bool _initialized;
         private Database _database;
 
@@ -48,7 +48,7 @@ namespace Jobscraper.Model.Scraping
 
         public void Start()
         {
-            _scrapeTimer = new Timer(1000);
+            _scrapeTimer = new System.Timers.Timer(1000);
             _scrapeTimer.Elapsed += OnTimedScrape;
             _scrapeTimer.AutoReset = true;
             _scrapeTimer.Enabled = true;
