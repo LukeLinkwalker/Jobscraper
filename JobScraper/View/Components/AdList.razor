@@ -1,86 +1,54 @@
-﻿<ul class="list-group" style="padding-right: 10px; margin-top: 10px; overflow-y: hidden; -webkit-overflow-scrolling: touch;">
-    <a href="#" class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
-        <div class="ad-content">
-            Cloud Engineer der brænder for at gøre en forskel – og vil være med i vores cloud-team
-        </div>
-        <div class="ad-content">
-            <span class="badge bg-dark">C#</span>
-            <span class="badge bg-dark">ASP.NET</span>
-            <span class="badge bg-dark">Blazor</span>
-        </div>
-    </a>
-        <a href="#" class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
-        <div class="ad-content">
-            Cloud Engineer der brænder for at gøre en forskel – og vil være med i vores cloud-team
-        </div>
-        <div class="ad-content">
-            <span class="badge bg-dark">C#</span>
-            <span class="badge bg-dark">ASP.NET</span>
-            <span class="badge bg-dark">Blazor</span>
-        </div>
-    </a>
-        <a href="#" class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
-        <div class="ad-content">
-            Cloud Engineer der brænder for at gøre en forskel – og vil være med i vores cloud-team
-        </div>
-        <div class="ad-content">
-            <span class="badge bg-dark">C#</span>
-            <span class="badge bg-dark">ASP.NET</span>
-            <span class="badge bg-dark">Blazor</span>
-        </div>
-    </a>
-        <a href="#" class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
-        <div class="ad-content">
-            Cloud Engineer der brænder for at gøre en forskel – og vil være med i vores cloud-team
-        </div>
-        <div class="ad-content">
-            <span class="badge bg-dark">C#</span>
-            <span class="badge bg-dark">ASP.NET</span>
-            <span class="badge bg-dark">Blazor</span>
-        </div>
-    </a>
-        <a href="#" class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
-        <div class="ad-content">
-            Cloud Engineer der brænder for at gøre en forskel – og vil være med i vores cloud-team
-        </div>
-        <div class="ad-content">
-            <span class="badge bg-dark">C#</span>
-            <span class="badge bg-dark">ASP.NET</span>
-            <span class="badge bg-dark">Blazor</span>
-        </div>
-    </a>
-        <a href="#" class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
-        <div class="ad-content">
-            Cloud Engineer der brænder for at gøre en forskel – og vil være med i vores cloud-team
-        </div>
-        <div class="ad-content">
-            <span class="badge bg-dark">C#</span>
-            <span class="badge bg-dark">ASP.NET</span>
-            <span class="badge bg-dark">Blazor</span>
-        </div>
-    </a>
-        <a href="#" class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
-        <div class="ad-content">
-            Cloud Engineer der brænder for at gøre en forskel – og vil være med i vores cloud-team
-        </div>
-        <div class="ad-content">
-            <span class="badge bg-dark">C#</span>
-            <span class="badge bg-dark">ASP.NET</span>
-            <span class="badge bg-dark">Blazor</span>
-        </div>
-    </a>
-    <a href="#" class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
-        <div class="ad-content">
-            Cloud Engineer der brænder for at gøre en forskel – og vil være med i vores cloud-team
-        </div>
-        <div class="ad-content">
-            <span class="badge bg-dark">C#</span>
-            <span class="badge bg-dark">ASP.NET</span>
-            <span class="badge bg-dark">Blazor</span>
-        </div>
-    </a>
+﻿@using JobScraper.Model.Data;
+@using JobScraper.ViewModel;
+@using JobScraper.ViewModel.EventArgs;
+
+<ul class="list-group" style="padding-right: 10px; margin-top: 10px; overflow-y: hidden; -webkit-overflow-scrolling: touch;">
+    @foreach(Ad ad in Ads)
+    {
+        <a href="#" @onclick='() => { OpenTarget(ad.URL); }' class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
+            <div class="ad-content">
+                @ad.Title
+            </div>
+
+            <div class="ad-content">
+                @foreach(string keyword in ad.Keywords)
+                {
+                    <span class="badge bg-dark keyword">@keyword</span>
+                }
+            </div>
+        </a>
+    }
 </ul>
 
 @code {
+    [Parameter]
+    public MainViewModel ViewModel { get; set; }
 
+    public List<Ad> Ads { get; set; }
+
+    public EventCallback<OpenTargetArgs> OpenTargetEvent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Ads = new List<Ad>();
+
+        // ViewModel -> GUI
+        ViewModel.OnAdProcessed += AdProcessedHandler;
+
+        // GUI -> ViewModel
+        OpenTargetEvent = ViewModel.OpenTargetCallback;
+    }
+
+    private void AdProcessedHandler(object? sender, AdListArgs args)
+    {
+        Ads = args.ads;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async void OpenTarget(string URL)
+    {
+        OpenTargetArgs args = new OpenTargetArgs();
+        args.URL = URL;
+        await OpenTargetEvent.InvokeAsync(args);
+    }
 }

@@ -16,6 +16,8 @@ namespace JobScraper.Model.Data
 {
     public class Database
     {
+        private const string DEBUG_FILTER = "DATABASE";
+
         private SQLiteConnection connection;
 
         public Database()

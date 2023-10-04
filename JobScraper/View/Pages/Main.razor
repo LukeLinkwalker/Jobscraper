@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="col-md-8 text-center vh-100 scrollable-y">
-            <AdList/>
+            <AdList ViewModel="ViewModel"/>
         </div>
     </div>
 </div>
@@ -28,6 +28,8 @@
     [Parameter]
     public EventCallback DoneLoadingCallback { get; set; }
 
+    private bool isFirstRender = true;
+
     protected override async Task OnInitializedAsync()
     {
     }
@@ -35,6 +37,11 @@
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
-        DoneLoadingCallback.InvokeAsync();
+
+        if(isFirstRender == true)
+        {
+            DoneLoadingCallback.InvokeAsync();
+            isFirstRender = false;
+        }
     }
 }

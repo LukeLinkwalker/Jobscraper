@@ -19,12 +19,10 @@ namespace JobScraper
             InitializeComponent();
 
             var database = new Database();
-
+            var processor = new SimpleProcessor(database);
             var jobIndexScraper = new JobIndexScraper(database);
 
             database.SetAdFetchedCallback(jobIndexScraper);
-
-            var processor = new SimpleProcessor(database);
             processor.SetAdFetchedCallback(jobIndexScraper);
 
             MainViewModel viewModel = new MainViewModel();
@@ -42,6 +40,7 @@ namespace JobScraper
                 {
                     { "ViewModel", viewModel },
                     { "DoneLoadingCallback", new EventCallback(null, () => {
+                        processor.ForceProcess();
                         jobIndexScraper.Init();
                         jobIndexScraper.Start();
                     })}

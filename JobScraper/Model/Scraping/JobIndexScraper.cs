@@ -64,7 +64,6 @@ namespace JobScraper.Model.Scraping
             IsRunning = false;
         }
 
-
         private void OnTimedScrape(object source, ElapsedEventArgs e)
         {
             if (_initialized == true)
@@ -91,7 +90,7 @@ namespace JobScraper.Model.Scraping
             List<Ad> listOfAdsToScrape = new List<Ad>();
             for (int i = 1; i <= numberOfPagesToScrape; i += 1)
             {
-                List<Ad> listOfAds = await FetchAdListings(i);
+                List<Ad> listOfAds = await FindAdListings(i);
                 listOfAdsToScrape.AddRange(listOfAds);
 
                 // Throttling visits to jobindex.dk
@@ -159,7 +158,7 @@ namespace JobScraper.Model.Scraping
             return result;
         }
 
-        private async Task<List<Ad>> FetchAdListings(int pageNumber)
+        private async Task<List<Ad>> FindAdListings(int pageNumber)
         {
             List<Ad> result = new List<Ad>();
 
@@ -187,7 +186,7 @@ namespace JobScraper.Model.Scraping
             return result;
         }
 
-        async Task<string> FetchAdContent(string URL)
+        private async Task<string> FetchAdContent(string URL)
         {
             string result = string.Empty;
 

@@ -12,7 +12,8 @@ namespace JobScraper.Model.Processing
 {
     public class SimpleProcessor : IProcessor
     {
-        public event EventHandler OnAdProcessed;
+        private const string DEBUG_FILTER = "SIMPLEPROCESSOR";
+
         public event EventHandler OnAdsProcessed;
 
         private Database _database;
@@ -23,6 +24,8 @@ namespace JobScraper.Model.Processing
         {
             _database = database; 
             _keywords = new List<string>();
+            _ads = _database.GetAds();
+
             ProcessAds();
         }
 
@@ -31,48 +34,58 @@ namespace JobScraper.Model.Processing
             scraper.OnAdFetchingProgress += (s, e) =>
             {
                 AdFetchingProgressEvent pe = (AdFetchingProgressEvent)e;
-                ProcessAd(pe.fetchedAd);
+                _ads.Add(pe.fetchedAd);
+                ProcessAds();
             };
         }
 
-        public void SetKeywordsChangedCallback()
+        public void AddKeyword(string keyword)
         {
-            // Use ProcessAds
+            _keywords.Add(keyword);
+            ProcessAds();
         }
 
-        private void ProcessAds()
+        public void RemoveKeyword(string keyword)
         {
-            foreach (Ad ad in _database.GetAds())
-            {
-                string txt = ad.Content.ToLower();
-                ad.Keywords.Clear();
+            _keywords.Remove(keyword);
+            ProcessAds();
+        }
 
-                foreach (string keyword in _keywords)
+        public void ForceProcess()
+        {
+            ProcessAds();
+        }
+
+        public void ProcessAds()
+        {
+            List<Ad> processedAds = _database.GetAds();
+
+            if(_keywords.Count > 0) 
+            {
+                foreach (Ad ad in processedAds)
                 {
-                    if (txt.Contains(keyword.ToLower()))
+                    string txt = ad.Content.ToLower();
+                    ad.Keywords.Clear();
+
+                    foreach (string keyword in _keywords)
                     {
-                        ad.Keywords.Add(keyword);
+                        if (txt.Contains(keyword.ToLower()))
+                        {
+                            ad.Keywords.Add(keyword);
+                        }
+                    }
+                }
+
+                for(int i = processedAds.Count - 1; i >= 0; i -= 1)
+                {
+                    if (processedAds[i].Keywords.Count == 0)
+                    {
+                        processedAds.RemoveAt(i);
                     }
                 }
             }
 
-            OnAdsProcessed?.Invoke(this, new AdsProcessedEvent(_ads));
-        }
-
-        private void ProcessAd(Ad ad)
-        {
-            string txt = ad.Content.ToLower();
-            ad.Keywords.Clear();
-
-            foreach (string keyword in _keywords)
-            {
-                if (txt.Contains(keyword.ToLower()))
-                {
-                    ad.Keywords.Add(keyword);
-                }
-            }
-
-            OnAdProcessed?.Invoke(this, new AdProcessedEvent(ad));
+            OnAdsProcessed?.Invoke(this, new AdsProcessedEvent(processedAds));
         }
     }
 }

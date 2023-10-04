@@ -15,7 +15,7 @@ namespace JobScraper.ViewModel
 
         private int _numberOfAdsToScrape;
 
-        public void InitStatus()
+        private void InitStatus()
         {
             _scraper.OnInitStarted += _scraper_OnInitStarted;
             _scraper.OnInitDone += _scraper_OnInitDone;

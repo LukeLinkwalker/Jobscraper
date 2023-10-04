@@ -8,7 +8,10 @@ namespace JobScraper.Model.Processing
 {
     public interface IProcessor
     {
-        event EventHandler OnAdProcessed;
         event EventHandler OnAdsProcessed;
+
+        void AddKeyword(string keyword);
+        void RemoveKeyword(string keyword);
+        void ForceProcess();
     }
 }
