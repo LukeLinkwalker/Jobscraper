@@ -16,18 +16,7 @@
             </div>
         </div>
         <div class="col-md-8 text-center vh-100 scrollable-y">
-            <ul class="list-group" style="padding-right: 10px; margin-top: 10px; overflow-y: hidden; -webkit-overflow-scrolling: touch;">
-                <a href="#" class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
-                    <div class="ad-content">
-                        Cloud Engineer der brænder for at gøre en forskel – og vil være med i vores cloud-team
-                    </div>
-                    <div class="ad-content">
-                        <span class="badge bg-dark">C#</span>
-                        <span class="badge bg-dark">ASP.NET</span>
-                        <span class="badge bg-dark">Blazor</span>
-                    </div>
-                </a>
-            </ul>
+            <AdList/>
         </div>
     </div>
 </div>
@@ -36,7 +25,16 @@
     [Parameter]
     public MainViewModel ViewModel { get; set; }
 
+    [Parameter]
+    public EventCallback DoneLoadingCallback { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        DoneLoadingCallback.InvokeAsync();
     }
 }

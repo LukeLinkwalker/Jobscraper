@@ -22,39 +22,6 @@ namespace JobScraper
 
             var jobIndexScraper = new JobIndexScraper(database);
 
-            //jobIndexScraper.OnInitStarted += (s, e) =>
-            //{
-            //    MessageBox.Show("Started init!");
-            //};
-            //
-            //jobIndexScraper.OnInitDone += (s, e) =>
-            //{
-            //    MessageBox.Show("Init done!");
-            //};
-            //
-            //jobIndexScraper.OnAdScrapingStarted += (s, e) =>
-            //{
-            //    MessageBox.Show("Scraping started!");
-            //};
-            //
-            //jobIndexScraper.OnAdScrapingDone += (s, e) =>
-            //{
-            //    MessageBox.Show("Scraping done!");
-            //};
-            //
-            //jobIndexScraper.OnAdFetchingStarted += (s, e) =>
-            //{
-            //    AdFetchingStartedEvent se = (AdFetchingStartedEvent)e;
-            //    MessageBox.Show("Fetching ads started! : " + se.totalAds);
-            //};
-            //
-            //jobIndexScraper.OnAdFetchingProgress += (s, e) =>
-            //{
-            //    AdFetchingProgressEvent pe = (AdFetchingProgressEvent)e;
-            //    MessageBox.Show("Fetched ad : " + pe.fetchedAd.Title);
-            //};
-
-
             database.SetAdFetchedCallback(jobIndexScraper);
 
             var processor = new SimpleProcessor(database);
@@ -67,7 +34,6 @@ namespace JobScraper
             viewModel.Init();
 
 
-
             var services = new ServiceCollection();
             services.AddWindowsFormsBlazorWebView();
             blazorWebView.HostPage = "wwwroot\\index.html";
@@ -75,13 +41,16 @@ namespace JobScraper
             blazorWebView.RootComponents.Add<Main>("#app",
                 new Dictionary<string, object?>
                 {
-                    { "ViewModel", viewModel }
+                    { "ViewModel", viewModel },
+                    { "DoneLoadingCallback", new EventCallback(null, () => {
+                        jobIndexScraper.Init();
+                        jobIndexScraper.Start();
+                    })}
                 });
 
 
-
-            jobIndexScraper.Init();
-            jobIndexScraper.Start();
+            //jobIndexScraper.Init();
+            //jobIndexScraper.Start();
         }
     }
 }

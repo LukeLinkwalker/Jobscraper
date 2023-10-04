@@ -1,7 +1,7 @@
 ﻿@using JobScraper.ViewModel.EventArgs;
 @using JobScraper.ViewModel;
 
-<div style="display:block;">
+<div style="display:@Visibility;">
     <div class="spinner-border align-middle" role="status"></div>
     <span class="align-middle" style="margin-left: 20px;">@Text</span>
 </div>
@@ -17,6 +17,7 @@
     protected override async Task OnInitializedAsync()
     {
         ViewModel.OnStatusChange += OnStatusChange;
+        Visibility = "none";
     }
 
     private void OnStatusChange(object? sender, StatusArgs args)
