@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JobScraper.ViewModel.EventArgs
 {
-    public class KeywordArg
+    public class FilterArgs
     {
         public string Keyword { get; set; }
     }

@@ -11,12 +11,12 @@ namespace JobScraper.ViewModel
     public partial class MainViewModel
     {
         // Events for triggering callbacks from ViewModel -> GUI
-        public event EventHandler<KeywordArg> OnKeywordAdded;
-        public event EventHandler<KeywordArg> OnKeywordRemoved;
+        public event EventHandler<FilterArgs> OnKeywordAdded;
+        public event EventHandler<FilterArgs> OnKeywordRemoved;
 
         // Events for receiving callbacks from GUI -> ViewModel
-        private static event EventHandler<KeywordArg> OnKeywordAddReceived;
-        private static event EventHandler<KeywordArg> OnKeywordRemoveReceived;
+        private static event EventHandler<FilterArgs> OnKeywordAddReceived;
+        private static event EventHandler<FilterArgs> OnKeywordRemoveReceived;
 
         private void InitFilter()
         {
@@ -29,7 +29,7 @@ namespace JobScraper.ViewModel
         /// Event chain is as follows:
         /// GUI Event -> AddKeywordCallback -> HandleAddKeywordCallback -> OnKeywordAdded
         /// </summary>
-        public EventCallback<KeywordArg> AddKeywordCallback = new EventCallback<KeywordArg>(null, (KeywordArg args) =>
+        public EventCallback<FilterArgs> AddKeywordCallback = new EventCallback<FilterArgs>(null, (FilterArgs args) =>
         {
             if(args.Keyword != null && args.Keyword.Length > 0)
             {
@@ -42,13 +42,13 @@ namespace JobScraper.ViewModel
         /// Event chain is as follows:
         /// GUI Event -> AddKeywordCallback -> HandleAddKeywordCallback -> OnKeywordAdded
         /// </summary>
-        private void HandleAddKeywordCallback(object? sender, KeywordArg args)
+        private void HandleAddKeywordCallback(object? sender, FilterArgs args)
         {
             // Handle event
             _processor.AddKeyword(args.Keyword);
 
             // Send event to GUI
-            OnKeywordAdded?.Invoke(this, new KeywordArg()
+            OnKeywordAdded?.Invoke(this, new FilterArgs()
             {
                 Keyword = args.Keyword
             });
@@ -59,7 +59,7 @@ namespace JobScraper.ViewModel
         /// Event chain is as follows:
         /// GUI Event -> RemoveKeywordCallback -> HandleRemoveKeywordCallback -> OnKeywordRemoved
         /// </summary>
-        public EventCallback<KeywordArg> RemoveKeywordCallback = new EventCallback<KeywordArg>(null, (KeywordArg args) =>
+        public EventCallback<FilterArgs> RemoveKeywordCallback = new EventCallback<FilterArgs>(null, (FilterArgs args) =>
         {
             OnKeywordRemoveReceived?.Invoke(null, args);
         });
@@ -70,13 +70,13 @@ namespace JobScraper.ViewModel
         /// Event chain is as follows:
         /// GUI Event -> RemoveKeywordCallback -> HandleRemoveKeywordCallback -> OnKeywordRemoved
         /// </summary>
-        private void HandleRemoveKeywordCallback(object? sender, KeywordArg args)
+        private void HandleRemoveKeywordCallback(object? sender, FilterArgs args)
         {
             // Handle event
             _processor.RemoveKeyword(args.Keyword);
 
             // Send event to GUI
-            OnKeywordRemoved?.Invoke(this, new KeywordArg()
+            OnKeywordRemoved?.Invoke(this, new FilterArgs()
             {
                 Keyword = args.Keyword
             });
