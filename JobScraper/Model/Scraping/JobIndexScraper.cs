@@ -91,7 +91,7 @@ namespace JobScraper.Model.Scraping
             List<Ad> listOfAdsToScrape = new List<Ad>();
             for (int i = 1; i <= numberOfPagesToScrape; i += 1)
             {
-                List<Ad> listOfAds = await FetchAdListings(numberOfPagesToScrape);
+                List<Ad> listOfAds = await FetchAdListings(i);
                 listOfAdsToScrape.AddRange(listOfAds);
 
                 // Throttling visits to jobindex.dk
