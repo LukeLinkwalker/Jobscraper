@@ -22,7 +22,6 @@ namespace JobScraper.Model.Data
         {
             connection = new SQLiteConnection("data.db");
             connection.CreateTable<Ad>();
-            connection.CreateTable<Keyword>();
         }
 
         public List<Ad> GetAds()

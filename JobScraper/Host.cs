@@ -33,7 +33,6 @@ namespace JobScraper
             viewModel._processor = processor;
             viewModel.Init();
 
-
             var services = new ServiceCollection();
             services.AddWindowsFormsBlazorWebView();
             blazorWebView.HostPage = "wwwroot\\index.html";
@@ -47,10 +46,6 @@ namespace JobScraper
                         jobIndexScraper.Start();
                     })}
                 });
-
-
-            //jobIndexScraper.Init();
-            //jobIndexScraper.Start();
         }
     }
 }
