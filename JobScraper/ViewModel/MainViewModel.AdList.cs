@@ -1,5 +1,4 @@
 ﻿using JobScraper.Model.Data;
-using JobScraper.Model.Processing.Events;
 using JobScraper.ViewModel.EventArgs;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -23,7 +22,6 @@ namespace JobScraper.ViewModel
         private void InitAdList()
         {
             OnOpenTargetReceived += HandleOpenTargetCallback;
-            _processor.OnAdsProcessed += _processor_OnAdsProcessed;
         }
 
         public EventCallback<OpenTargetArgs> OpenTargetCallback = new EventCallback<OpenTargetArgs>(null, (OpenTargetArgs args) =>
@@ -31,12 +29,15 @@ namespace JobScraper.ViewModel
             OnOpenTargetReceived?.Invoke(null, args);
         });
 
-        private void _processor_OnAdsProcessed(object? sender, System.EventArgs e)
+        public void ForceUpdateAdList()
         {
-            AdsProcessedEvent pe = (AdsProcessedEvent)e;
+            UpdateAdList();
+        }
 
+        private void UpdateAdList()
+        {
             AdListArgs args = new AdListArgs();
-            args.ads = pe.processedAds;
+            args.ads = filteredAds;
 
             OnAdProcessed.Invoke(null, args);
         }

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.Extensions.DependencyInjection;
 using JobScraper.View.Pages;
 using JobScraper.View.Components;
-using JobScraper.Model.Processing;
 using JobScraper.Model.Scraping;
 using JobScraper.Model.Scraping.Events;
 using JobScraper.Model.Data;
@@ -19,16 +18,13 @@ namespace JobScraper
             InitializeComponent();
 
             var database = new Database();
-            var processor = new SimpleProcessor(database);
             var jobIndexScraper = new JobIndexScraper(database);
 
             database.SetAdFetchedCallback(jobIndexScraper);
-            processor.SetAdFetchedCallback(jobIndexScraper);
 
             MainViewModel viewModel = new MainViewModel();
             viewModel._scraper = jobIndexScraper;
             viewModel._database = database;
-            viewModel._processor = processor;
             viewModel.Init();
 
             var services = new ServiceCollection();
@@ -40,7 +36,8 @@ namespace JobScraper
                 {
                     { "ViewModel", viewModel },
                     { "DoneLoadingCallback", new EventCallback(null, () => {
-                        processor.ForceProcess();
+                        //processor.ForceProcess();
+                        viewModel.ForceUpdateAdList();
                         jobIndexScraper.Init();
                         jobIndexScraper.Start();
                     })}

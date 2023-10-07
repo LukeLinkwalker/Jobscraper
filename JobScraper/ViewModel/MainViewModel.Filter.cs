@@ -1,5 +1,8 @@
-﻿using JobScraper.ViewModel.EventArgs;
+﻿using JobScraper.Model.Data;
+using JobScraper.Model.Scraping.Events;
+using JobScraper.ViewModel.EventArgs;
 using Microsoft.AspNetCore.Components;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +21,62 @@ namespace JobScraper.ViewModel
         private static event EventHandler<FilterArgs> OnKeywordAddReceived;
         private static event EventHandler<FilterArgs> OnKeywordRemoveReceived;
 
+        private List<Ad> allAds = new List<Ad>();
+        private List<Ad> filteredAds = new List<Ad>();
+        private List<string> keywords = new List<string>();
+
         private void InitFilter()
         {
             OnKeywordAddReceived += HandleAddKeywordCallback;
             OnKeywordRemoveReceived += HandleRemoveKeywordCallback;
+
+            allAds = _database.GetAds();
+            filteredAds = allAds.ToList();
+        }
+
+        private void _scraper_OnAdFetchingProgress_Filter(object? sender, System.EventArgs e)
+        {
+            AdFetchingProgressEvent pe = (AdFetchingProgressEvent) e;
+            allAds.Add(pe.fetchedAd);
+            FilterAds();
+        }
+
+        private void FilterAds()
+        {
+            filteredAds.Clear();
+            filteredAds = allAds.FindAll(ad => ad.Keywords.Count == 0).ToList();
+
+            if (keywords.Count > 0)
+            {
+                // Find keywords in ads
+                foreach (Ad ad in filteredAds)
+                {
+                    string txt = ad.Content.ToLower();
+                    ad.Keywords.Clear();
+
+                    foreach (string keyword in keywords)
+                    {
+                        if (txt.Contains(keyword.ToLower()))
+                        {
+                            ad.Keywords.Add(keyword);
+                        }
+                    }
+                }
+
+                // Remove ads without any matching keywords
+                for (int i = filteredAds.Count - 1; i >= 0; i -= 1)
+                {
+                    if (filteredAds[i].Keywords.Count == 0)
+                    {
+                        filteredAds.RemoveAt(i);
+                    }
+                }
+            }
+
+            // Sort ads by timestamp
+            filteredAds = filteredAds.OrderByDescending(ad => ad.Timestamp).ToList();
+
+            UpdateAdList();
         }
 
         /// <summary>
@@ -45,7 +100,8 @@ namespace JobScraper.ViewModel
         private void HandleAddKeywordCallback(object? sender, FilterArgs args)
         {
             // Handle event
-            _processor.AddKeyword(args.Keyword);
+            keywords.Add(args.Keyword);
+            FilterAds();
 
             // Send event to GUI
             OnKeywordAdded?.Invoke(this, new FilterArgs()
@@ -73,7 +129,8 @@ namespace JobScraper.ViewModel
         private void HandleRemoveKeywordCallback(object? sender, FilterArgs args)
         {
             // Handle event
-            _processor.RemoveKeyword(args.Keyword);
+            keywords.Remove(args.Keyword);
+            FilterAds();
 
             // Send event to GUI
             OnKeywordRemoved?.Invoke(this, new FilterArgs()

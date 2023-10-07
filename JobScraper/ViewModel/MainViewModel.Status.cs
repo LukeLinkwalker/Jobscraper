@@ -66,43 +66,5 @@ namespace JobScraper.ViewModel
 
             OnStatusChange?.Invoke(this, args);
         }
-
-        
-
-        
-
-        
     }
-
-    //_scraper.OnInitStarted += (s, e) =>
-    //        {
-    //            MessageBox.Show("Started init!");
-    //        };
-    //
-    //jobIndexScraper.OnInitDone += (s, e) =>
-    //{
-    //    MessageBox.Show("Init done!");
-    //};
-    //
-    //jobIndexScraper.OnAdScrapingStarted += (s, e) =>
-    //{
-    //    MessageBox.Show("Scraping started!");
-    //};
-    //
-    //jobIndexScraper.OnAdScrapingDone += (s, e) =>
-    //{
-    //    MessageBox.Show("Scraping done!");
-    //};
-    //
-    //jobIndexScraper.OnAdFetchingStarted += (s, e) =>
-    //{
-    //    AdFetchingStartedEvent se = (AdFetchingStartedEvent)e;
-    //    MessageBox.Show("Fetching ads started! : " + se.totalAds);
-    //};
-    //
-    //jobIndexScraper.OnAdFetchingProgress += (s, e) =>
-    //{
-    //    AdFetchingProgressEvent pe = (AdFetchingProgressEvent)e;
-    //    MessageBox.Show("Fetched ad : " + pe.fetchedAd.Title);
-    //};
 }

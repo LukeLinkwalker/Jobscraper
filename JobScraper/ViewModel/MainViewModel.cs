@@ -1,5 +1,4 @@
 ﻿using JobScraper.Model.Data;
-using JobScraper.Model.Processing;
 using JobScraper.Model.Scraping;
 using JobScraper.ViewModel.EventArgs;
 using Microsoft.AspNetCore.Components;
@@ -13,7 +12,6 @@ namespace JobScraper.ViewModel
 {
     public partial class MainViewModel
     {
-        public IProcessor _processor { get; set; }
         public IScraper _scraper { get; set; }
         public Database _database { get; set; }
 
