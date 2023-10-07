@@ -30,11 +30,13 @@ namespace JobScraper.ViewModel
             OnKeywordAddReceived += HandleAddKeywordCallback;
             OnKeywordRemoveReceived += HandleRemoveKeywordCallback;
 
+            _scraper.OnAdFetchingProgress += HandleOnAdFetchingProgressEvent;
+
             allAds = _database.GetAds();
             filteredAds = allAds.ToList();
         }
 
-        private void _scraper_OnAdFetchingProgress_Filter(object? sender, System.EventArgs e)
+        private void HandleOnAdFetchingProgressEvent(object? sender, System.EventArgs e)
         {
             AdFetchingProgressEvent pe = (AdFetchingProgressEvent) e;
             allAds.Add(pe.fetchedAd);
