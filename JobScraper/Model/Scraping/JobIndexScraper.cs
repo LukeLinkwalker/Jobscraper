@@ -115,6 +115,7 @@ namespace JobScraper.Model.Scraping
                 Ad currentAd = listOfAdsToScrape[i];
                 string content = await FetchAdContent(currentAd.URL);
                 currentAd.Content = content;
+                currentAd.Timestamp = DateTime.Now.ToString();
 
                 OnAdFetchingProgress?.Invoke(this, new AdFetchingProgressEvent(i, currentAd));
             }
@@ -177,8 +178,7 @@ namespace JobScraper.Model.Scraping
                     result.Add(new Ad()
                     {
                         Title = titleString,
-                        URL = urlString,
-                        Timestamp = DateTime.Now.ToString()
+                        URL = urlString
                     });
                 }
             }
