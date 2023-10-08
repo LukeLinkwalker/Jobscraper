@@ -29,25 +29,34 @@ namespace JobScraper.ViewModel
             OnOpenTargetReceived?.Invoke(null, args);
         });
 
+        /// <summary>
+        /// Forces the list of ads displayed to be updated
+        /// </summary>
         public void ForceUpdateAdList()
         {
             UpdateAdList();
         }
 
+        /// <summary>
+        /// Sends all filtered ads to the UI by invoking OnAdProcessed
+        /// </summary>
         private void UpdateAdList()
         {
             AdListArgs args = new AdListArgs();
-            args.ads = filteredAds;
+            args.ads = _filteredAds;
 
             OnAdProcessed.Invoke(null, args);
         }
 
+        /// <summary>
+        /// Opens job ads directly in the browser when the UI sends the event.
+        /// </summary>
         private void HandleOpenTargetCallback(object? sender, OpenTargetArgs args)
         {
             // Handle event
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = args.URL,
+                FileName = args.url,
                 UseShellExecute = true
             };
             Process.Start(startInfo);

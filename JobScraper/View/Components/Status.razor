@@ -1,36 +1,36 @@
 ﻿@using JobScraper.ViewModel.EventArgs;
 @using JobScraper.ViewModel;
 
-<div style="display:@Visibility;">
+<div style="display:@visibility;">
     <div class="spinner-border align-middle" role="status"></div>
-    <span class="align-middle" style="margin-left: 20px;">@Text</span>
+    <span class="align-middle" style="margin-left: 20px;">@text</span>
 </div>
 
 @code {
     [Parameter]
-    public MainViewModel ViewModel { get; set; }
+    public MainViewModel viewModel { get; set; }
 
-    public string Text { get; set; }
+    public string text { get; set; }
 
-    public string Visibility { get; set; }
+    public string visibility { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        ViewModel.OnStatusChange += OnStatusChange;
-        Visibility = "none";
+        viewModel.OnStatusChange += OnStatusChange;
+        visibility = "none";
     }
 
     private void OnStatusChange(object? sender, StatusArgs args)
     {
-        Text = args.Text;
+        text = args.text;
 
-        if(args.Visible == true)
+        if(args.visible == true)
         {
-            Visibility = "block";
+            visibility = "block";
         } 
         else
         {
-            Visibility = "none";    
+            visibility = "none";    
         }
 
         InvokeAsync(StateHasChanged);

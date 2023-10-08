@@ -58,11 +58,16 @@ namespace JobScraper.ViewModel
             EmitStatusChangeEvent(true, "Scraping ad " + (pe.index + 1) + " of " + _numberOfAdsToScrape);
         }
 
+        /// <summary>
+        /// Sends an event to the UI with information about updating the state of the status indicator
+        /// </summary>
+        /// <param name="visibility">Whether or not the status indicator should be visible</param>
+        /// <param name="text">What text should be shown next to the status indicator</param>
         private void EmitStatusChangeEvent(bool visibility, string text)
         {
             StatusArgs args = new StatusArgs();
-            args.Visible = visibility;
-            args.Text = text;
+            args.visible = visibility;
+            args.text = text;
 
             OnStatusChange?.Invoke(this, args);
         }

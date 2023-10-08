@@ -21,7 +21,7 @@ namespace JobScraper.Model.Scraping
         public event EventHandler OnAdFetchingStarted;
         public event EventHandler OnAdFetchingDone;
         public event EventHandler OnAdFetchingProgress;
-        public bool IsRunning;
+        public bool isRunning;
 
         private BrowserFetcher _browserFetcher;
         private IBrowser _browser;
@@ -37,7 +37,7 @@ namespace JobScraper.Model.Scraping
             _lastScraping = DateTime.MinValue;
             _initialized = false;
             _database = database;
-            IsRunning = false;
+            isRunning = false;
         }
 
         public void Init()
@@ -52,14 +52,14 @@ namespace JobScraper.Model.Scraping
             _scrapeTimer.AutoReset = true;
             _scrapeTimer.Enabled = true;
 
-            IsRunning = true;
+            isRunning = true;
         }
 
         public void Stop()
         {
             _scrapeTimer.Stop();
 
-            IsRunning = false;
+            isRunning = false;
         }
 
         private void OnTimedScrape(object source, ElapsedEventArgs e)
@@ -76,6 +76,9 @@ namespace JobScraper.Model.Scraping
             }
         }
 
+        /// <summary>
+        /// Executes the entire scraping workflow
+        /// </summary>
         private async void Scrape()
         {
             OnAdScrapingStarted?.Invoke(this, EventArgs.Empty);
@@ -119,6 +122,9 @@ namespace JobScraper.Model.Scraping
             OnAdScrapingDone?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Initializes puppeteer
+        /// </summary>
         private async void Initialize()
         {
             OnInitStarted?.Invoke(this, EventArgs.Empty);
@@ -154,6 +160,9 @@ namespace JobScraper.Model.Scraping
             return result;
         }
 
+        /// <summary>
+        /// Finds and returns the URLs of all ads posted within 7 days and in 'systemudvikling'
+        /// </summary>
         private async Task<List<Ad>> FindAdListings(int pageNumber)
         {
             List<Ad> result = new List<Ad>();
@@ -181,6 +190,9 @@ namespace JobScraper.Model.Scraping
             return result;
         }
 
+        /// <summary>
+        /// Retrieves all page content of the provided URL
+        /// </summary>
         private async Task<string> FetchAdContent(string URL)
         {
             string result = string.Empty;

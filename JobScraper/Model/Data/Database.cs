@@ -16,32 +16,38 @@ namespace JobScraper.Model.Data
 {
     public class Database
     {
-        private SQLiteConnection connection;
+        private SQLiteConnection _connection;
 
         public Database()
         {
-            connection = new SQLiteConnection("data.db");
-            connection.CreateTable<Ad>();
+            _connection = new SQLiteConnection("data.db");
+            _connection.CreateTable<Ad>();
 
             // Remove ads in database older than 60 days
             DateTime currentTime = DateTime.Now;
-            var ads = connection.GetAllWithChildren<Ad>(); 
+            var ads = _connection.GetAllWithChildren<Ad>(); 
             foreach(Ad ad in ads.Where(ad => currentTime.Subtract(ad.GetTimestamp()).Days > 60))
             {
-                connection.Delete<Ad>(ad);
+                _connection.Delete<Ad>(ad);
             }
         }
 
+        /// <summary>
+        /// Returns all ads in the database
+        /// </summary>
         public List<Ad> GetAds()
         {
-            return connection.GetAllWithChildren<Ad>();
+            return _connection.GetAllWithChildren<Ad>();
         }
 
+        /// <summary>
+        /// Checks if the database already contains an ad
+        /// </summary>
         public bool ContainsAd(string URL)
         {
             try
             {
-                connection.Get<Ad>(ad => ad.URL == URL);
+                _connection.Get<Ad>(ad => ad.URL == URL);
             } 
             catch (System.InvalidOperationException ex)
             {
@@ -51,12 +57,15 @@ namespace JobScraper.Model.Data
             return true;
         }
 
+        /// <summary>
+        /// Binds the database to the AdFetchedCallback invoked by the scraper when a new ad has been scraped.
+        /// </summary>
         public void SetAdFetchedCallback(IScraper scraper)
         {
             scraper.OnAdFetchingProgress += (s, e) =>
             {
                 AdFetchingProgressEvent pe = (AdFetchingProgressEvent)e;
-                connection.Insert(pe.fetchedAd);
+                _connection.Insert(pe.fetchedAd);
             };
         }
     }

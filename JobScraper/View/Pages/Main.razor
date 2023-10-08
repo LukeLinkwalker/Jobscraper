@@ -6,17 +6,17 @@
         <div class="col-md-4 p-0">
             <div class="vh-100 d-flex flex-column">
                 <div class="flex-column flex-grow-1 text-center">
-                    <Filter ViewModel="ViewModel"/>
+                    <Filter viewModel="ViewModel"/>
                 </div>
                 <div class="flex-column">
                     <div class="text-black text-center mt-3" style="height:50px">
-                        <Status ViewModel="ViewModel"/>
+                        <Status viewModel="ViewModel"/>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-8 text-center vh-100 scrollable-y">
-            <AdList ViewModel="ViewModel"/>
+        <div class="col-md-8 text-center vh-100 overflow-y-scroll">
+            <AdList viewModel="ViewModel"/>
         </div>
     </div>
 </div>
@@ -28,7 +28,7 @@
     [Parameter]
     public EventCallback DoneLoadingCallback { get; set; }
 
-    private bool isFirstRender = true;
+    private bool _isFirstRender = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -38,10 +38,10 @@
     {
         base.OnAfterRender(firstRender);
 
-        if(isFirstRender == true)
+        if(_isFirstRender == true)
         {
             DoneLoadingCallback.InvokeAsync();
-            isFirstRender = false;
+            _isFirstRender = false;
         }
     }
 }

@@ -8,6 +8,6 @@ namespace JobScraper.ViewModel.EventArgs
 {
     public class FilterArgs
     {
-        public string Keyword { get; set; }
+        public string keyword { get; set; }
     }
 }

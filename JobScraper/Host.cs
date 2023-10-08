@@ -34,7 +34,7 @@ namespace JobScraper
             blazorWebView.RootComponents.Add<Main>("#app",
                 new Dictionary<string, object?>
                 {
-                    { "ViewModel", viewModel },
+                    { "viewModel", viewModel },
                     { "DoneLoadingCallback", new EventCallback(null, () => {
                         viewModel.ForceUpdateAdList();
                         jobIndexScraper.Init();

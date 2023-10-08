@@ -8,6 +8,6 @@ namespace JobScraper.ViewModel.EventArgs
 {
     public class OpenTargetArgs
     {
-        public string URL { get; set; }
+        public string url { get; set; }
     }
 }

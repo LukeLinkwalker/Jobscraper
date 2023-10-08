@@ -22,9 +22,9 @@ namespace JobScraper.ViewModel
         private static event EventHandler<FilterArgs> OnKeywordAddReceived;
         private static event EventHandler<FilterArgs> OnKeywordRemoveReceived;
 
-        private List<Ad> allAds = new List<Ad>();
-        private List<Ad> filteredAds = new List<Ad>();
-        private List<string> keywords = new List<string>();
+        private List<Ad> _allAds = new List<Ad>();
+        private List<Ad> _filteredAds = new List<Ad>();
+        private List<string> _keywords = new List<string>();
 
         private void InitFilter()
         {
@@ -33,35 +33,38 @@ namespace JobScraper.ViewModel
 
             _scraper.OnAdFetchingProgress += HandleOnAdFetchingProgressEvent;
 
-            allAds = _database.GetAds();
-            filteredAds = allAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
+            _allAds = _database.GetAds();
+            _filteredAds = _allAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
         }
 
         private void HandleOnAdFetchingProgressEvent(object? sender, System.EventArgs e)
         {
             AdFetchingProgressEvent pe = (AdFetchingProgressEvent) e;
-            allAds.Add(pe.fetchedAd);
+            _allAds.Add(pe.fetchedAd);
             FilterAds();
         }
 
+        /// <summary>
+        /// Filters all ads stored based on the keywords stored
+        /// </summary>
         private void FilterAds()
         {
-            filteredAds = allAds;
+            _filteredAds = _allAds;
 
-            foreach(Ad ad in allAds)
+            foreach(Ad ad in _allAds)
             {
                 ad.Keywords.Clear();
             }
 
-            if (keywords.Count > 0)
+            if (_keywords.Count > 0)
             {
                 // Find keywords in ads
-                foreach (Ad ad in filteredAds)
+                foreach (Ad ad in _filteredAds)
                 {
                     string txt = ad.Content.ToLower();
                     ad.Keywords.Clear();
 
-                    foreach (string keyword in keywords)
+                    foreach (string keyword in _keywords)
                     {
                         if (txt.Contains(keyword.ToLower()))
                         {
@@ -71,11 +74,11 @@ namespace JobScraper.ViewModel
                 }
 
                 // Set filtered ads to only be ads that have keywords
-                filteredAds = allAds.Where(ad => ad.Keywords.Count > 0).ToList();
+                _filteredAds = _allAds.Where(ad => ad.Keywords.Count > 0).ToList();
             }
 
             // Sort ads by timestamp
-            filteredAds = filteredAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
+            _filteredAds = _filteredAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
 
             UpdateAdList();
         }
@@ -87,7 +90,7 @@ namespace JobScraper.ViewModel
         /// </summary>
         public EventCallback<FilterArgs> AddKeywordCallback = new EventCallback<FilterArgs>(null, (FilterArgs args) =>
         {
-            if(args.Keyword != null && args.Keyword.Length > 0)
+            if(args.keyword != null && args.keyword.Length > 0)
             {
                 OnKeywordAddReceived?.Invoke(null, args);
             }
@@ -101,13 +104,13 @@ namespace JobScraper.ViewModel
         private void HandleAddKeywordCallback(object? sender, FilterArgs args)
         {
             // Handle event
-            keywords.Add(args.Keyword);
+            _keywords.Add(args.keyword);
             FilterAds();
 
             // Send event to GUI
             OnKeywordAdded?.Invoke(this, new FilterArgs()
             {
-                Keyword = args.Keyword
+                keyword = args.keyword
             });
         }
 
@@ -130,13 +133,13 @@ namespace JobScraper.ViewModel
         private void HandleRemoveKeywordCallback(object? sender, FilterArgs args)
         {
             // Handle event
-            keywords.Remove(args.Keyword);
+            _keywords.Remove(args.keyword);
             FilterAds();
 
             // Send event to GUI
             OnKeywordRemoved?.Invoke(this, new FilterArgs()
             {
-                Keyword = args.Keyword
+                keyword = args.keyword
             });
         }
     }

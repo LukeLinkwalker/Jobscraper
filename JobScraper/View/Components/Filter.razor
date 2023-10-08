@@ -2,11 +2,11 @@
 @using JobScraper.ViewModel;
 
 <form class="input-group input-group-sm" style="padding: 10px;">
-    <input class="form-control" @bind-value="KeywordInput" type="text" placeholder="Keyword to filter for" />
+    <input class="form-control" @bind-value="keywordInput" type="text" placeholder="Keyword to filter for" />
     <button class="btn btn-primary" type="reset" @onclick="AddKeyword">Add</button>
 </form>
 <div class="keyword-list">
-    @foreach (string keyword in KeywordFilter)
+    @foreach (string keyword in keywordFilter)
     {
         <a class="keyword" href="#" @onclick="() => RemoveKeyword(keyword)"><span class="badge bg-primary">@keyword</span></a>
     }
@@ -14,49 +14,49 @@
 
 @code {
     [Parameter]
-    public MainViewModel ViewModel { get; set; }
+    public MainViewModel viewModel { get; set; }
 
     public EventCallback<FilterArgs> AddKeywordCallback { get; set; }
     public EventCallback<FilterArgs> RemoveKeywordCallback { get; set; }
 
-    public string KeywordInput { get; set; }
-    public List<string> KeywordFilter = new List<string>();
+    public string keywordInput { get; set; }
+    public List<string> keywordFilter = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
         // ViewModel -> Component
-        ViewModel.OnKeywordRemoved += KeywordRemovedHandler;
-        ViewModel.OnKeywordAdded += KeywordAddedHandler;
+        viewModel.OnKeywordRemoved += KeywordRemovedHandler;
+        viewModel.OnKeywordAdded += KeywordAddedHandler;
 
         // Component -> ViewModel
-        AddKeywordCallback = ViewModel.AddKeywordCallback;
-        RemoveKeywordCallback = ViewModel.RemoveKeywordCallback;
+        AddKeywordCallback = viewModel.AddKeywordCallback;
+        RemoveKeywordCallback = viewModel.RemoveKeywordCallback;
     }
 
     // Component -> ViewModel
     private async void AddKeyword()
     {
         FilterArgs args = new FilterArgs();
-        args.Keyword = KeywordInput;
-        KeywordInput = string.Empty;
+        args.keyword = keywordInput;
+        keywordInput = string.Empty;
         await AddKeywordCallback.InvokeAsync(args);
     }
 
     private async void RemoveKeyword(string keyword)
     {
         FilterArgs args = new FilterArgs();
-        args.Keyword = keyword;
+        args.keyword = keyword;
         await RemoveKeywordCallback.InvokeAsync(args);
     }
 
     // ViewModel -> Component
     private void KeywordAddedHandler(object sender, FilterArgs args)
     {
-        KeywordFilter.Add(args.Keyword);
+        keywordFilter.Add(args.keyword);
     }
 
     private void KeywordRemovedHandler(object sender, FilterArgs args)
     {
-        KeywordFilter.Remove(args.Keyword);
+        keywordFilter.Remove(args.keyword);
     }
 }

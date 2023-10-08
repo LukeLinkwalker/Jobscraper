@@ -11,6 +11,13 @@ namespace JobScraper.Utils
 {
     public static class Extensions
     {
+        /// <summary>
+        /// Finds the element that match the element parameter and returns the property value for that element.
+        /// </summary>
+        /// <param name="handle">Element to be searched</param>
+        /// <param name="element">Element to be found</param>
+        /// <param name="property">Property to be returned</param>
+        /// <returns></returns>
         public static async Task<string> QueryElementAndProperty(this IElementHandle handle, string element, string property)
         {
             IElementHandle queriedElement = await handle.QuerySelectorAsync(element);
@@ -18,6 +25,13 @@ namespace JobScraper.Utils
             return queriedProperty.RemoteObject.Value.ToString();
         }
 
+        /// <summary>
+        /// Finds the element that match the element parameter and returns the property value for that element.
+        /// </summary>
+        /// <param name="handle">Element to be searched</param>
+        /// <param name="element">Element to be found</param>
+        /// <param name="property">Property to be returned</param>
+        /// <returns></returns>
         public static async Task<string> QueryElementAndProperty(this IPage page, string element, string property)
         {
             IElementHandle queriedElement = await page.QuerySelectorAsync(element);
@@ -25,6 +39,13 @@ namespace JobScraper.Utils
             return queriedProperty.RemoteObject.Value.ToString();
         }
 
+        /// <summary>
+        /// Finds all elements that match the element parameter and returns the property value for all elements.
+        /// </summary>
+        /// <param name="handle">Element to be searched</param>
+        /// <param name="element">Element to be found</param>
+        /// <param name="property">Property to be returned</param>
+        /// <returns></returns>
         public static async Task<List<string>> QueryAllElementsAndProperties(this IPage page, string element, string property)
         {
             List<string> properties = new List<string>();

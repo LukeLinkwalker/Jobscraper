@@ -8,7 +8,7 @@ namespace JobScraper.ViewModel.EventArgs
 {
     public class StatusArgs
     {
-        public bool Visible { get; set; }
-        public string Text { get; set; }
+        public bool visible { get; set; }
+        public string text { get; set; }
     }
 }

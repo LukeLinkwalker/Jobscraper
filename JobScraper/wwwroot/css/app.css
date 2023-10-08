@@ -36,11 +36,6 @@
     color: white;
 }
 
-.scrollable-y {
-    overflow-x: hidden;
-    overflow-y: scroll;
-}
-
 .keyword {
     margin-right: 5px;
 }

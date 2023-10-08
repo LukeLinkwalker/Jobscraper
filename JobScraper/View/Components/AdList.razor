@@ -3,7 +3,7 @@
 @using JobScraper.ViewModel.EventArgs;
 
 <ul class="list-group" style="padding-right: 10px; margin-top: 10px; overflow-y: hidden; -webkit-overflow-scrolling: touch;">
-    @foreach(Ad ad in Ads)
+    @foreach(Ad ad in ads)
     {
         <a href="#" @onclick='() => { OpenTarget(ad.URL); }' class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
             <div class="ad-content">
@@ -22,33 +22,33 @@
 
 @code {
     [Parameter]
-    public MainViewModel ViewModel { get; set; }
+    public MainViewModel viewModel { get; set; }
 
-    public List<Ad> Ads { get; set; }
+    public List<Ad> ads { get; set; }
 
     public EventCallback<OpenTargetArgs> OpenTargetEvent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Ads = new List<Ad>();
+        ads = new List<Ad>();
 
         // ViewModel -> GUI
-        ViewModel.OnAdProcessed += AdProcessedHandler;
+        viewModel.OnAdProcessed += AdProcessedHandler;
 
         // GUI -> ViewModel
-        OpenTargetEvent = ViewModel.OpenTargetCallback;
+        OpenTargetEvent = viewModel.OpenTargetCallback;
     }
 
     private void AdProcessedHandler(object? sender, AdListArgs args)
     {
-        Ads = args.ads;
+        ads = args.ads;
         InvokeAsync(StateHasChanged);
     }
 
     private async void OpenTarget(string URL)
     {
         OpenTargetArgs args = new OpenTargetArgs();
-        args.URL = URL;
+        args.url = URL;
         await OpenTargetEvent.InvokeAsync(args);
     }
 }
