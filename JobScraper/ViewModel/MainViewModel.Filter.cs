@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace JobScraper.ViewModel
             _scraper.OnAdFetchingProgress += HandleOnAdFetchingProgressEvent;
 
             allAds = _database.GetAds();
-            filteredAds = allAds.ToList();
+            filteredAds = allAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
         }
 
         private void HandleOnAdFetchingProgressEvent(object? sender, System.EventArgs e)
@@ -45,8 +46,12 @@ namespace JobScraper.ViewModel
 
         private void FilterAds()
         {
-            filteredAds.Clear();
-            filteredAds = allAds.FindAll(ad => ad.Keywords.Count == 0).ToList();
+            filteredAds = allAds;
+
+            foreach(Ad ad in allAds)
+            {
+                ad.Keywords.Clear();
+            }
 
             if (keywords.Count > 0)
             {
@@ -65,18 +70,12 @@ namespace JobScraper.ViewModel
                     }
                 }
 
-                // Remove ads without any matching keywords
-                for (int i = filteredAds.Count - 1; i >= 0; i -= 1)
-                {
-                    if (filteredAds[i].Keywords.Count == 0)
-                    {
-                        filteredAds.RemoveAt(i);
-                    }
-                }
+                // Set filtered ads to only be ads that have keywords
+                filteredAds = allAds.Where(ad => ad.Keywords.Count > 0).ToList();
             }
 
             // Sort ads by timestamp
-            filteredAds = filteredAds.OrderByDescending(ad => ad.Timestamp).ToList();
+            filteredAds = filteredAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
 
             UpdateAdList();
         }

@@ -37,9 +37,9 @@ namespace JobScraper.Model.Data
             Keywords = new List<string>();
         }
 
-        public DateTime getTimestamp()
+        public DateTime GetTimestamp()
         {
-            return DateTime.Now;
+            return DateTime.Parse(Timestamp);
         }
     }
 }

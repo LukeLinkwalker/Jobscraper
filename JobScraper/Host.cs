@@ -36,7 +36,6 @@ namespace JobScraper
                 {
                     { "ViewModel", viewModel },
                     { "DoneLoadingCallback", new EventCallback(null, () => {
-                        //processor.ForceProcess();
                         viewModel.ForceUpdateAdList();
                         jobIndexScraper.Init();
                         jobIndexScraper.Start();

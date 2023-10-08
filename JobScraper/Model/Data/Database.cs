@@ -16,14 +16,20 @@ namespace JobScraper.Model.Data
 {
     public class Database
     {
-        private const string DEBUG_FILTER = "DATABASE";
-
         private SQLiteConnection connection;
 
         public Database()
         {
             connection = new SQLiteConnection("data.db");
             connection.CreateTable<Ad>();
+
+            // Remove ads in database older than 60 days
+            DateTime currentTime = DateTime.Now;
+            var ads = connection.GetAllWithChildren<Ad>(); 
+            foreach(Ad ad in ads.Where(ad => currentTime.Subtract(ad.GetTimestamp()).Days > 60))
+            {
+                connection.Delete<Ad>(ad);
+            }
         }
 
         public List<Ad> GetAds()
@@ -35,7 +41,7 @@ namespace JobScraper.Model.Data
         {
             try
             {
-                connection.Get<Ad>((ad) => ad.URL == URL);
+                connection.Get<Ad>(ad => ad.URL == URL);
             } 
             catch (System.InvalidOperationException ex)
             {
@@ -51,13 +57,7 @@ namespace JobScraper.Model.Data
             {
                 AdFetchingProgressEvent pe = (AdFetchingProgressEvent)e;
                 connection.Insert(pe.fetchedAd);
-                Debug.WriteLine("Added ad to db : " + pe.fetchedAd.Title);
             };
-        }
-
-        private void Clean()
-        {
-            // remove ads older than 90 days
         }
     }
 }
