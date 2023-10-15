@@ -6,7 +6,7 @@ There are still more things I would like to add to this project so here is a tod
 - [ ] Add more options to the filter.
 - [ ] Add more information to the ads being shown.
 - [ ] Replace JobIndexScraper with a generic base scraper such that a scraper for any specific site can be added by simply inputting information about what an ad looks like and how to navigate the job site.
-- [ ] Enable the user to define scrapers in the UI with a WYSIWYG editor.
+- [ ] Enable the user to define scrapers in the UI with a visual editor.
 
 Demonstration:
 ![til](https://i.imgur.com/yUZxBWa.gif)
