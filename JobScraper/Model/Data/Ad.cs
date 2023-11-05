@@ -17,6 +17,9 @@ namespace JobScraper.Model.Data
         public string Title { get; set; }
 
         [NotNull]
+        public string Company { get; set; }
+
+        [NotNull]
         public string URL { get; set; }
 
         [NotNull]
