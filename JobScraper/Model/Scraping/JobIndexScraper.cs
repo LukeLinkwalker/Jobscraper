@@ -181,7 +181,6 @@ namespace JobScraper.Model.Scraping
 
                     IElementHandle companyElement = await handle.QuerySelectorAsync(".jix-toolbar-top__company");
                     string companyString = await companyElement.QueryElementAndProperty("a", "innerText");
-                    Debug.WriteLine("DEBUGGING: " + companyString);
 
                     result.Add(new Ad()
                     {
