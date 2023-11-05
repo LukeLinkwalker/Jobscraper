@@ -179,10 +179,15 @@ namespace JobScraper.Model.Scraping
                     IElementHandle titleElement = await handle.QuerySelectorAsync("h4");
                     string urlString = await titleElement.QueryElementAndProperty("a", "href");
 
+                    IElementHandle companyElement = await handle.QuerySelectorAsync(".jix-toolbar-top__company");
+                    string companyString = await companyElement.QueryElementAndProperty("a", "innerText");
+                    Debug.WriteLine("DEBUGGING: " + companyString);
+
                     result.Add(new Ad()
                     {
                         Title = titleString,
-                        URL = urlString
+                        URL = urlString,
+                        Company = companyString
                     });
                 }
             }
