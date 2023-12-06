@@ -1,6 +1,7 @@
 ﻿using PuppeteerSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -21,6 +22,13 @@ namespace JobScraper.Utils
         public static async Task<string> QueryElementAndProperty(this IElementHandle handle, string element, string property)
         {
             IElementHandle queriedElement = await handle.QuerySelectorAsync(element);
+
+            // Quickfix for bug
+            if(queriedElement == null)
+            {
+                return String.Empty;
+            }
+
             IJSHandle queriedProperty = await queriedElement.GetPropertyAsync(property);
             return queriedProperty.RemoteObject.Value.ToString();
         }

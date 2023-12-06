@@ -180,7 +180,11 @@ namespace JobScraper.Model.Scraping
                     string urlString = await titleElement.QueryElementAndProperty("a", "href");
 
                     IElementHandle companyElement = await handle.QuerySelectorAsync(".jix-toolbar-top__company");
-                    string companyString = await companyElement.QueryElementAndProperty("a", "innerText");
+                    string companyString = "Bug - See issue #1";
+                    if(companyElement != null)
+                    {
+                        companyString = await companyElement.QueryElementAndProperty("a", "innerText");
+                    }
 
                     result.Add(new Ad()
                     {
