@@ -1,4 +1,5 @@
-﻿@using JobScraper.ViewModel.EventArgs;
+﻿@using JobScraper.Model.Filter;
+@using JobScraper.ViewModel.EventArgs;
 @using JobScraper.ViewModel;
 
 <form class="input-group input-group-sm" style="padding: 10px;">
@@ -6,9 +7,9 @@
     <button class="btn btn-primary" type="reset" @onclick="AddKeyword">Add</button>
 </form>
 <div class="keyword-list">
-    @foreach (string keyword in keywordFilter)
+    @foreach (Keyword keyword in keywordFilter)
     {
-        <a class="keyword" href="#" @onclick="() => RemoveKeyword(keyword)"><span class="badge bg-primary">@keyword</span></a>
+        <a class="keyword" href="#" @onclick="() => RemoveKeyword(keyword.text)"><span class="badge bg-primary">@keyword.text</span></a>
     }
 </div>
 
@@ -20,7 +21,7 @@
     public EventCallback<FilterArgs> RemoveKeywordCallback { get; set; }
 
     public string keywordInput { get; set; }
-    public List<string> keywordFilter = new List<string>();
+    public List<Keyword> keywordFilter = new List<Keyword>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,15 +38,23 @@
     private async void AddKeyword()
     {
         FilterArgs args = new FilterArgs();
-        args.keyword = keywordInput;
+        args.keyword = new Keyword {
+            text = keywordInput,
+            type = Keyword.Type.None
+        };
         keywordInput = string.Empty;
+
         await AddKeywordCallback.InvokeAsync(args);
     }
 
     private async void RemoveKeyword(string keyword)
     {
         FilterArgs args = new FilterArgs();
-        args.keyword = keyword;
+        args.keyword = new Keyword
+        {
+            text = keyword    
+        };
+
         await RemoveKeywordCallback.InvokeAsync(args);
     }
 
@@ -57,6 +66,7 @@
 
     private void KeywordRemovedHandler(object sender, FilterArgs args)
     {
-        keywordFilter.Remove(args.keyword);
+        Keyword keyword = keywordFilter.Single(k => k.text == args.keyword.text);
+        keywordFilter.Remove(keyword);
     }
 }

@@ -13,6 +13,7 @@ namespace JobScraper.Model.Filter
 
         public enum Type
         {
+            None = -1,
             Must = 0,
             Should = 1,
             Cannot = 2

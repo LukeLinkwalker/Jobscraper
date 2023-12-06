@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using JobScraper.Model.Filter;
+using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace JobScraper.Model.Data
         public string Content { get; set; }
 
         [Ignore]
-        public List<string> Keywords { get; set; }
+        public List<Keyword> Keywords { get; set; }
 
         public Ad()
         {
@@ -37,7 +38,7 @@ namespace JobScraper.Model.Data
             URL = string.Empty;
             Timestamp = string.Empty;
             Content = string.Empty;
-            Keywords = new List<string>();
+            Keywords = new List<Keyword>();
         }
 
         public DateTime GetTimestamp()

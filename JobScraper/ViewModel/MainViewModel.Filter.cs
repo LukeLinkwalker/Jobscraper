@@ -1,4 +1,5 @@
 ﻿using JobScraper.Model.Data;
+using JobScraper.Model.Filter;
 using JobScraper.Model.Scraping.Events;
 using JobScraper.ViewModel.EventArgs;
 using Microsoft.AspNetCore.Components;
@@ -24,7 +25,7 @@ namespace JobScraper.ViewModel
 
         private List<Ad> _allAds = new List<Ad>();
         private List<Ad> _filteredAds = new List<Ad>();
-        private List<string> _keywords = new List<string>();
+        private List<Keyword> _keywords = new List<Keyword>();
 
         private void InitFilter()
         {
@@ -64,9 +65,9 @@ namespace JobScraper.ViewModel
                     string txt = ad.Content.ToLower();
                     ad.Keywords.Clear();
 
-                    foreach (string keyword in _keywords)
+                    foreach (Keyword keyword in _keywords)
                     {
-                        if (txt.Contains(keyword.ToLower()))
+                        if (txt.Contains(keyword.text.ToLower()))
                         {
                             ad.Keywords.Add(keyword);
                         }
@@ -90,7 +91,7 @@ namespace JobScraper.ViewModel
         /// </summary>
         public EventCallback<FilterArgs> AddKeywordCallback = new EventCallback<FilterArgs>(null, (FilterArgs args) =>
         {
-            if(args.keyword != null && args.keyword.Length > 0)
+            if(args.keyword != null && args.keyword.text.Length > 0)
             {
                 OnKeywordAddReceived?.Invoke(null, args);
             }
@@ -133,7 +134,8 @@ namespace JobScraper.ViewModel
         private void HandleRemoveKeywordCallback(object? sender, FilterArgs args)
         {
             // Handle event
-            _keywords.Remove(args.keyword);
+            Keyword keyword = _keywords.Single(k => k.text == args.keyword.text);
+            _keywords.Remove(keyword);
             FilterAds();
 
             // Send event to GUI

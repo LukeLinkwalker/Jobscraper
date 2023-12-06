@@ -1,4 +1,5 @@
 ﻿@using JobScraper.Model.Data;
+@using JobScraper.Model.Filter;
 @using JobScraper.ViewModel;
 @using JobScraper.ViewModel.EventArgs;
 
@@ -11,9 +12,9 @@
             </div>
 
             <div class="ad-content">
-                @foreach(string keyword in ad.Keywords)
+                @foreach(Keyword keyword in ad.Keywords)
                 {
-                    <span class="badge bg-dark keyword">@keyword</span>
+                    <span class="badge bg-dark keyword">@keyword.text</span>
                 }
             </div>
         </a>
