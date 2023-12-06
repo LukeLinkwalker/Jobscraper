@@ -12,9 +12,16 @@
             </div>
 
             <div class="ad-content">
-                @foreach(Keyword keyword in ad.Keywords)
+                @foreach (Keyword keyword in ad.Keywords)
                 {
-                    <span class="badge bg-dark keyword">@keyword.text</span>
+                    @if (keyword.type == Keyword.Type.Must)
+                    {
+                        <span class="badge bg-success keyword">@keyword.text</span>
+                    }
+                    else if (keyword.type == Keyword.Type.Should)
+                    {
+                        <span class="badge bg-warning keyword">@keyword.text</span>
+                    }
                 }
             </div>
         </a>

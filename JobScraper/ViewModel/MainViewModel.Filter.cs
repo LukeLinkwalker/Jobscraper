@@ -76,8 +76,27 @@ namespace JobScraper.ViewModel
 
                 // Set filtered ads to only be ads that have keywords
                 _filteredAds = _allAds.Where(ad => ad.Keywords.Count > 0).ToList();
-            }
 
+                // Remove ads that have keywords of type 'Cannot'
+                for (int i = _filteredAds.Count - 1; i >= 0; i -= 1)
+                {
+                    bool remove = false;
+
+                    foreach (Keyword keyword in _filteredAds[i].Keywords)
+                    {
+                        if (keyword.type == Keyword.Type.Cannot)
+                        {
+                            remove = true;
+                            break;
+                        }
+                    }
+
+                    if(remove == true)
+                    {
+                        _filteredAds.RemoveAt(i);
+                    }
+                }
+            }
             // Sort ads by timestamp
             _filteredAds = _filteredAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
 

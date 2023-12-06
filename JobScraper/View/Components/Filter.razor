@@ -9,7 +9,22 @@
 <div class="keyword-list">
     @foreach (Keyword keyword in keywordFilter)
     {
-        <a class="keyword" href="#" @onclick="() => RemoveKeyword(keyword.text)"><span class="badge bg-primary">@keyword.text</span></a>
+        <a class="keyword" href="#" @onclick="() => RemoveKeyword(keyword.text)">
+
+        @if (keyword.type == Keyword.Type.Must)
+        {
+            <span class="badge bg-success">@keyword.text</span>
+        }
+        else if (keyword.type == Keyword.Type.Should)
+        {
+            <span class="badge bg-warning">@keyword.text</span>
+        }
+        else if (keyword.type == Keyword.Type.Cannot)
+        {
+            <span class="badge bg-danger">@keyword.text</span>
+        }
+
+        </a>
     }
 </div>
 
@@ -38,10 +53,27 @@
     private async void AddKeyword()
     {
         FilterArgs args = new FilterArgs();
+
         args.keyword = new Keyword {
             text = keywordInput,
             type = Keyword.Type.None
         };
+
+        switch (args.keyword.text[0])
+        {
+            case '?':
+                args.keyword.text = args.keyword.text.Substring(1);
+                args.keyword.type = Keyword.Type.Should;
+                break;
+            case '!':
+                args.keyword.text = args.keyword.text.Substring(1);
+                args.keyword.type = Keyword.Type.Cannot;
+                break;
+            default:
+                args.keyword.type = Keyword.Type.Must;
+                break;
+        }
+
         keywordInput = string.Empty;
 
         await AddKeywordCallback.InvokeAsync(args);
