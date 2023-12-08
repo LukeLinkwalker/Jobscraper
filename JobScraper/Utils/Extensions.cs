@@ -22,15 +22,28 @@ namespace JobScraper.Utils
         public static async Task<string> QueryElementAndProperty(this IElementHandle handle, string element, string property)
         {
             IElementHandle queriedElement = await handle.QuerySelectorAsync(element);
-
-            // Quickfix for bug
-            if(queriedElement == null)
-            {
-                return String.Empty;
-            }
-
             IJSHandle queriedProperty = await queriedElement.GetPropertyAsync(property);
             return queriedProperty.RemoteObject.Value.ToString();
+        }
+
+        public static async Task<string> QueryProperty(this IElementHandle handle, string property)
+        {
+            IJSHandle queriedProperty = await handle.GetPropertyAsync(property);
+            return queriedProperty.RemoteObject.Value.ToString();
+        }
+
+        public static async Task<bool> HasElement(this IElementHandle handle, string element)
+        {
+            IElementHandle queriedElement = await handle.QuerySelectorAsync(element);
+
+            if(queriedElement != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
