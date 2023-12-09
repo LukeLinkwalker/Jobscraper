@@ -4,7 +4,7 @@
 
 <form class="input-group input-group-sm" style="padding: 10px;" @onsubmit="AddKeyword">
     <input class="form-control" @bind-value="keywordInput" type="text" placeholder="Keyword to filter for" />
-    <button class="btn btn-primary" type="reset">Add</button>
+    <button class="btn btn-primary" type="submit">Add</button>
 </form>
 <div class="keyword-list">
     @foreach (Keyword keyword in keywordFilter)
