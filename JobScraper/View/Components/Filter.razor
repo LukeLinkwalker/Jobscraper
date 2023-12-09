@@ -2,9 +2,9 @@
 @using JobScraper.ViewModel.EventArgs;
 @using JobScraper.ViewModel;
 
-<form class="input-group input-group-sm" style="padding: 10px;">
+<form class="input-group input-group-sm" style="padding: 10px;" @onsubmit="AddKeyword">
     <input class="form-control" @bind-value="keywordInput" type="text" placeholder="Keyword to filter for" />
-    <button class="btn btn-primary" type="reset" @onclick="AddKeyword">Add</button>
+    <button class="btn btn-primary" type="reset">Add</button>
 </form>
 <div class="keyword-list">
     @foreach (Keyword keyword in keywordFilter)

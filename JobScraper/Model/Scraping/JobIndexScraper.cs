@@ -169,7 +169,7 @@ namespace JobScraper.Model.Scraping
 
             using (IPage page = await _browser.NewPageAsync())
             {
-                await page.GoToAsync("https://www.jobindex.dk/jobsoegning/it/systemudvikling?jobage=7&page=" + pageNumber);
+                await page.GoToAsync($"https://www.jobindex.dk/jobsoegning/it/systemudvikling?jobage=7&page={pageNumber}");
 
                 IElementHandle[] JobListings = await page.QuerySelectorAllAsync(".jobsearch-result");
 

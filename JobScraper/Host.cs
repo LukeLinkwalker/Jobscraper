@@ -29,6 +29,9 @@ namespace JobScraper
 
             var services = new ServiceCollection();
             services.AddWindowsFormsBlazorWebView();
+
+            services.AddBlazorWebViewDeveloperTools();
+
             blazorWebView.HostPage = "wwwroot\\index.html";
             blazorWebView.Services = services.BuildServiceProvider();
             blazorWebView.RootComponents.Add<Main>("#app",
