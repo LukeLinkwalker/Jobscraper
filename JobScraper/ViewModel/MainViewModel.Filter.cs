@@ -124,7 +124,21 @@ namespace JobScraper.ViewModel
         private void HandleAddKeywordCallback(object? sender, FilterArgs args)
         {
             // Handle event
+            // Remove keyword if it is already in the list of keywords
+            Keyword? keyword = _keywords.Where(keyword => keyword.text.ToLower() == args.keyword.text.ToLower()).SingleOrDefault();
+
+            if(keyword != null)
+            {
+                _keywords.Remove(keyword);
+                OnKeywordRemoved?.Invoke(this, new FilterArgs()
+                {
+                    keyword = keyword
+                });
+            }
+
+            // Add new keyword
             _keywords.Add(args.keyword);
+
             FilterAds();
 
             // Send event to GUI
