@@ -7,6 +7,17 @@
     @foreach(Ad ad in ads)
     {
         <a href="#" @onclick='() => { OpenTarget(ad.URL); }' class="list-group-item list-group-item-light border-1 rounded-3 mb-2 ad-container">
+            <div class="ad-content fw-bold fs-6">
+                @if (ad.Company == String.Empty)
+                {
+                    <span>N/A</span>
+                }
+                else
+                {
+                    @ad.Company
+                }
+            </div>
+
             <div class="ad-content">
                 @ad.Title
             </div>
