@@ -74,27 +74,16 @@ namespace JobScraper.ViewModel
                     }
                 }
 
-                // Set filtered ads to only be ads that have keywords
-                _filteredAds = _allAds.Where(ad => ad.Keywords.Count > 0).ToList();
+                _filteredAds = _allAds.ToList();
 
-                // Remove ads that have keywords of type 'Cannot'
-                for (int i = _filteredAds.Count - 1; i >= 0; i -= 1)
-                {
-                    bool remove = false;
+                if(_keywords.Where(keyword => keyword.type == Keyword.Type.Must).Count() > 0) {
+                    // Set _filteredAds to only ads that have atleast one keyword
+                    _filteredAds = _filteredAds.Where(ad => ad.Keywords.Where(keyword => keyword.type == Keyword.Type.Must).Count() > 0).ToList();
+                }
 
-                    foreach (Keyword keyword in _filteredAds[i].Keywords)
-                    {
-                        if (keyword.type == Keyword.Type.Cannot)
-                        {
-                            remove = true;
-                            break;
-                        }
-                    }
-
-                    if(remove == true)
-                    {
-                        _filteredAds.RemoveAt(i);
-                    }
+                if(_keywords.Where(keyword => keyword.type == Keyword.Type.Cannot).Count() > 0) {
+                    // Set _filteredAds to only ads that don't have keywords of type Cannot
+                    _filteredAds = _filteredAds.Where(ad => ad.Keywords.Where(keyword => keyword.type == Keyword.Type.Cannot).Count() == 0).ToList();
                 }
             }
             // Sort ads by timestamp
