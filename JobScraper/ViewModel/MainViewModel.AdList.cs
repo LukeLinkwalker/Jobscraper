@@ -35,6 +35,14 @@ namespace JobScraper.ViewModel
             PubSub.Get().Publish(Topics.AD_PROCESSED, args);
         }
 
+        private void UpdateAdList(List<Ad> ads)
+        {
+            AdListArgs args = new AdListArgs();
+            args.ads = ads;
+
+            PubSub.Get().Publish(Topics.AD_PROCESSED, args);
+        }
+
         private void OpenTarget(dynamic data)
         {
             OpenTargetArgs args = data as OpenTargetArgs;

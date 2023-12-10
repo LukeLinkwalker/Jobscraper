@@ -51,7 +51,8 @@ namespace JobScraper.ViewModel
 
             _keywords.Add(args.keyword);
 
-            FilterAds();
+            List<Ad> ads = FilterAds(_allAds, _keywords);
+            UpdateAdList(ads);
 
             PubSub.Get().Publish(Topics.ADDED_KEYWORD, new FilterArgs { keyword = args.keyword });
         }
@@ -62,7 +63,9 @@ namespace JobScraper.ViewModel
 
             Keyword keyword = _keywords.Single(k => k.text == args.keyword.text);
             _keywords.Remove(keyword);
-            FilterAds();
+
+            List<Ad> ads = FilterAds(_allAds, _keywords);
+            UpdateAdList(ads);
 
             PubSub.Get().Publish(Topics.REMOVED_KEYWORD, new FilterArgs { keyword = args.keyword });
         }
@@ -71,30 +74,24 @@ namespace JobScraper.ViewModel
         {
             AdFetchingProgressEvent pe = (AdFetchingProgressEvent) e;
             _allAds.Add(pe.fetchedAd);
-            FilterAds();
+
+            List<Ad> ads = FilterAds(_allAds, _keywords);
+            UpdateAdList(ads);
         }
 
-        /// <summary>
-        /// Filters all ads stored based on the keywords stored
-        /// </summary>
-        private void FilterAds()
+        private List<Ad> FilterAds(List<Ad> ads, List<Keyword> keywords)
         {
-            _filteredAds = _allAds;
+            List<Ad> filteredAds = ads;
 
-            foreach(Ad ad in _allAds)
-            {
-                ad.Keywords.Clear();
-            }
-
-            if (_keywords.Count > 0)
+            if (keywords.Count > 0)
             {
                 // Find keywords in ads
-                foreach (Ad ad in _filteredAds)
+                foreach (Ad ad in filteredAds)
                 {
                     string txt = ad.Content.ToLower();
                     ad.Keywords.Clear();
 
-                    foreach (Keyword keyword in _keywords)
+                    foreach (Keyword keyword in keywords)
                     {
                         if (txt.Contains(keyword.text.ToLower()))
                         {
@@ -103,22 +100,22 @@ namespace JobScraper.ViewModel
                     }
                 }
 
-                _filteredAds = _allAds.ToList();
-
-                if(_keywords.Where(keyword => keyword.type == Keyword.Type.Must).Count() > 0) {
-                    // Set _filteredAds to only ads that have atleast one keyword
-                    _filteredAds = _filteredAds.Where(ad => ad.Keywords.Where(keyword => keyword.type == Keyword.Type.Must).Count() > 0).ToList();
+                if (keywords.Where(keyword => keyword.type == Keyword.Type.Must).Count() > 0)
+                {
+                    // Set filteredAds to only ads that have atleast one keyword
+                    filteredAds = filteredAds.Where(ad => ad.Keywords.Where(keyword => keyword.type == Keyword.Type.Must).Count() > 0).ToList();
                 }
 
-                if(_keywords.Where(keyword => keyword.type == Keyword.Type.Cannot).Count() > 0) {
-                    // Set _filteredAds to only ads that don't have keywords of type Cannot
-                    _filteredAds = _filteredAds.Where(ad => ad.Keywords.Where(keyword => keyword.type == Keyword.Type.Cannot).Count() == 0).ToList();
+                if (keywords.Where(keyword => keyword.type == Keyword.Type.Cannot).Count() > 0)
+                {
+                    // Set filteredAds to only ads that don't have keywords of type Cannot
+                    filteredAds = filteredAds.Where(ad => ad.Keywords.Where(keyword => keyword.type == Keyword.Type.Cannot).Count() == 0).ToList();
                 }
             }
             // Sort ads by timestamp
-            _filteredAds = _filteredAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
+            filteredAds = filteredAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
 
-            UpdateAdList();
+            return filteredAds;
         }
     }
 }
