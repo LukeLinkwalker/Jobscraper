@@ -1,5 +1,6 @@
 ﻿@using JobScraper.Model.Data;
 @using JobScraper.Model.Filter;
+@using JobScraper.Utils;
 @using JobScraper.ViewModel;
 @using JobScraper.ViewModel.EventArgs;
 
@@ -45,17 +46,14 @@
 
     public List<Ad> ads { get; set; }
 
-    public EventCallback<OpenTargetArgs> OpenTargetEvent { get; set; }
+    private PubSub.Callback adProcessed;
 
     protected override async Task OnInitializedAsync()
     {
         ads = new List<Ad>();
 
-        // ViewModel -> GUI
-        viewModel.OnAdProcessed += AdProcessedHandler;
-
-        // GUI -> ViewModel
-        OpenTargetEvent = viewModel.OpenTargetCallback;
+        adProcessed = AdProcessed;
+        PubSub.Get().Subscribe(Topics.AD_PROCESSED, adProcessed);
     }
 
     private void AdProcessedHandler(object? sender, AdListArgs args)
@@ -64,10 +62,19 @@
         InvokeAsync(StateHasChanged);
     }
 
+    private void AdProcessed(dynamic data)
+    {
+        AdListArgs args = data as AdListArgs;
+
+        ads = args.ads;
+        InvokeAsync(StateHasChanged);
+    }
+
     private async void OpenTarget(string URL)
     {
         OpenTargetArgs args = new OpenTargetArgs();
         args.url = URL;
-        await OpenTargetEvent.InvokeAsync(args);
+
+        PubSub.Get().Publish(Topics.OPEN_TARGET, args);
     }
 }

@@ -15,8 +15,10 @@ namespace JobScraper.ViewModel
         public IScraper _scraper { get; set; }
         public Database _database { get; set; }
 
-        public MainViewModel()
+        public MainViewModel(IScraper scraper, Database database)
         {
+            _scraper = scraper;
+            _database = database;
         }
 
         public void Init()

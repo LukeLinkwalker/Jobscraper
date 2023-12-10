@@ -1,6 +1,7 @@
 ﻿@using JobScraper.Model.Filter;
 @using JobScraper.ViewModel.EventArgs;
 @using JobScraper.ViewModel;
+@using JobScraper.Utils;
 
 <form class="input-group input-group-sm" style="padding: 10px;" @onsubmit="AddKeyword">
     <input class="form-control" @bind-value="keywordInput" type="text" placeholder="Keyword to filter for" />
@@ -32,24 +33,20 @@
     [Parameter]
     public MainViewModel viewModel { get; set; }
 
-    public EventCallback<FilterArgs> AddKeywordCallback { get; set; }
-    public EventCallback<FilterArgs> RemoveKeywordCallback { get; set; }
-
     public string keywordInput { get; set; }
     public List<Keyword> keywordFilter = new List<Keyword>();
 
+    private PubSub.Callback addedKeyword;
+    private PubSub.Callback removedKeyword;
+
     protected override async Task OnInitializedAsync()
     {
-        // ViewModel -> Component
-        viewModel.OnKeywordRemoved += KeywordRemovedHandler;
-        viewModel.OnKeywordAdded += KeywordAddedHandler;
-
-        // Component -> ViewModel
-        AddKeywordCallback = viewModel.AddKeywordCallback;
-        RemoveKeywordCallback = viewModel.RemoveKeywordCallback;
+        addedKeyword = AddedKeyword;
+        removedKeyword = RemovedKeyword;
+        PubSub.Get().Subscribe(Topics.ADDED_KEYWORD, addedKeyword);
+        PubSub.Get().Subscribe(Topics.REMOVED_KEYWORD, removedKeyword);
     }
 
-    // Component -> ViewModel
     private async void AddKeyword()
     {
         FilterArgs args = new FilterArgs();
@@ -76,7 +73,7 @@
 
         keywordInput = string.Empty;
 
-        await AddKeywordCallback.InvokeAsync(args);
+        PubSub.Get().Publish(Topics.ADD_KEYWORD, args);
     }
 
     private async void RemoveKeyword(string keyword)
@@ -87,17 +84,17 @@
             text = keyword    
         };
 
-        await RemoveKeywordCallback.InvokeAsync(args);
+        PubSub.Get().Publish(Topics.REMOVE_KEYWORD, args);
     }
 
-    // ViewModel -> Component
-    private void KeywordAddedHandler(object sender, FilterArgs args)
+    private void AddedKeyword(dynamic data)
     {
-        keywordFilter.Add(args.keyword);
+        keywordFilter.Add((data as FilterArgs).keyword);
     }
 
-    private void KeywordRemovedHandler(object sender, FilterArgs args)
+    private void RemovedKeyword(dynamic data)
     {
+        FilterArgs args = data as FilterArgs;
         Keyword keyword = keywordFilter.Single(k => k.text == args.keyword.text);
         keywordFilter.Remove(keyword);
     }

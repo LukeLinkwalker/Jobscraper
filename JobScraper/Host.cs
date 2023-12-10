@@ -22,9 +22,7 @@ namespace JobScraper
 
             database.SetAdFetchedCallback(jobIndexScraper);
 
-            MainViewModel viewModel = new MainViewModel();
-            viewModel._scraper = jobIndexScraper;
-            viewModel._database = database;
+            MainViewModel viewModel = new MainViewModel(jobIndexScraper, database);
             viewModel.Init();
 
             var services = new ServiceCollection();

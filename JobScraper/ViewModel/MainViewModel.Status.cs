@@ -1,5 +1,6 @@
 ﻿using JobScraper.Model.Scraping;
 using JobScraper.Model.Scraping.Events;
+using JobScraper.Utils;
 using JobScraper.ViewModel.EventArgs;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,6 @@ namespace JobScraper.ViewModel
 {
     public partial class MainViewModel
     {
-        public event EventHandler<StatusArgs> OnStatusChange;
-
         private int _numberOfAdsToScrape;
 
         private void InitStatus()
@@ -69,7 +68,7 @@ namespace JobScraper.ViewModel
             args.visible = visibility;
             args.text = text;
 
-            OnStatusChange?.Invoke(this, args);
+            PubSub.Get().Publish(Topics.STATUS_CHANGED, args);
         }
     }
 }

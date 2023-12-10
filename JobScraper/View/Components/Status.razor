@@ -1,4 +1,5 @@
-﻿@using JobScraper.ViewModel.EventArgs;
+﻿@using JobScraper.Utils;
+@using JobScraper.ViewModel.EventArgs;
 @using JobScraper.ViewModel;
 
 <div style="display:@visibility;">
@@ -14,23 +15,28 @@
 
     public string visibility { get; set; }
 
+    private PubSub.Callback statusChanged;
+
     protected override async Task OnInitializedAsync()
     {
-        viewModel.OnStatusChange += OnStatusChange;
+        statusChanged = StatusChanged;
+        PubSub.Get().Subscribe(Topics.STATUS_CHANGED, statusChanged);
         visibility = "none";
     }
 
-    private void OnStatusChange(object? sender, StatusArgs args)
+    private void StatusChanged(dynamic data)
     {
+        StatusArgs args = data as StatusArgs;
+
         text = args.text;
 
-        if(args.visible == true)
+        if (args.visible == true)
         {
             visibility = "block";
-        } 
+        }
         else
         {
-            visibility = "none";    
+            visibility = "none";
         }
 
         InvokeAsync(StateHasChanged);

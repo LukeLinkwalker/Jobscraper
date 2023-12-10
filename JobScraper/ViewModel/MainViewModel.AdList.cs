@@ -1,4 +1,5 @@
 ﻿using JobScraper.Model.Data;
+using JobScraper.Utils;
 using JobScraper.ViewModel.EventArgs;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -13,47 +14,31 @@ namespace JobScraper.ViewModel
 {
     public partial class MainViewModel
     {
-        // Events for triggering callbacks from ViewModel -> GUI
-        public event EventHandler<AdListArgs> OnAdProcessed;
-
-        // Events for receiving callbacks from GUI -> ViewModel
-        private static event EventHandler<OpenTargetArgs> OnOpenTargetReceived;
+        private PubSub.Callback openTarget;
 
         private void InitAdList()
         {
-            OnOpenTargetReceived += HandleOpenTargetCallback;
+            openTarget = OpenTarget;
+            PubSub.Get().Subscribe(Topics.OPEN_TARGET, openTarget);
         }
 
-        public EventCallback<OpenTargetArgs> OpenTargetCallback = new EventCallback<OpenTargetArgs>(null, (OpenTargetArgs args) =>
-        {
-            OnOpenTargetReceived?.Invoke(null, args);
-        });
-
-        /// <summary>
-        /// Forces the list of ads displayed to be updated
-        /// </summary>
         public void ForceUpdateAdList()
         {
             UpdateAdList();
         }
 
-        /// <summary>
-        /// Sends all filtered ads to the UI by invoking OnAdProcessed
-        /// </summary>
         private void UpdateAdList()
         {
             AdListArgs args = new AdListArgs();
             args.ads = _filteredAds;
 
-            OnAdProcessed.Invoke(null, args);
+            PubSub.Get().Publish(Topics.AD_PROCESSED, args);
         }
 
-        /// <summary>
-        /// Opens job ads directly in the browser when the UI sends the event.
-        /// </summary>
-        private void HandleOpenTargetCallback(object? sender, OpenTargetArgs args)
+        private void OpenTarget(dynamic data)
         {
-            // Handle event
+            OpenTargetArgs args = data as OpenTargetArgs;
+
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = args.url,

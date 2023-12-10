@@ -1,6 +1,7 @@
 ﻿using JobScraper.Model.Data;
 using JobScraper.Model.Filter;
 using JobScraper.Model.Scraping.Events;
+using JobScraper.Utils;
 using JobScraper.ViewModel.EventArgs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.VisualBasic;
@@ -15,13 +16,8 @@ namespace JobScraper.ViewModel
 {
     public partial class MainViewModel
     {
-        // Events for triggering callbacks from ViewModel -> GUI
-        public event EventHandler<FilterArgs> OnKeywordAdded;
-        public event EventHandler<FilterArgs> OnKeywordRemoved;
-
-        // Events for receiving callbacks from GUI -> ViewModel
-        private static event EventHandler<FilterArgs> OnKeywordAddReceived;
-        private static event EventHandler<FilterArgs> OnKeywordRemoveReceived;
+        private PubSub.Callback addKeyword;
+        private PubSub.Callback removeKeyword;
 
         private List<Ad> _allAds = new List<Ad>();
         private List<Ad> _filteredAds = new List<Ad>();
@@ -29,13 +25,46 @@ namespace JobScraper.ViewModel
 
         private void InitFilter()
         {
-            OnKeywordAddReceived += HandleAddKeywordCallback;
-            OnKeywordRemoveReceived += HandleRemoveKeywordCallback;
+            addKeyword = AddKeyword;
+            removeKeyword = RemoveKeyword;
+
+            PubSub.Get().Subscribe(Topics.ADD_KEYWORD, addKeyword);
+            PubSub.Get().Subscribe(Topics.REMOVE_KEYWORD, removeKeyword);
 
             _scraper.OnAdFetchingProgress += HandleOnAdFetchingProgressEvent;
 
             _allAds = _database.GetAds();
             _filteredAds = _allAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
+        }
+
+        private void AddKeyword(dynamic data) 
+        {
+            FilterArgs args = data as FilterArgs;
+
+            // Remove keyword if it is already in the list of keywords
+            Keyword? keyword = _keywords.Where(keyword => keyword.text.ToLower() == args.keyword.text.ToLower()).SingleOrDefault();
+            if(keyword != null)
+            {
+                _keywords.Remove(keyword);
+                PubSub.Get().Publish(Topics.REMOVED_KEYWORD, new FilterArgs { keyword = args.keyword });
+            }
+
+            _keywords.Add(args.keyword);
+
+            FilterAds();
+
+            PubSub.Get().Publish(Topics.ADDED_KEYWORD, new FilterArgs { keyword = args.keyword });
+        }
+
+        private void RemoveKeyword(dynamic data)
+        {
+            FilterArgs args = data as FilterArgs;
+
+            Keyword keyword = _keywords.Single(k => k.text == args.keyword.text);
+            _keywords.Remove(keyword);
+            FilterAds();
+
+            PubSub.Get().Publish(Topics.REMOVED_KEYWORD, new FilterArgs { keyword = args.keyword });
         }
 
         private void HandleOnAdFetchingProgressEvent(object? sender, System.EventArgs e)
@@ -90,81 +119,6 @@ namespace JobScraper.ViewModel
             _filteredAds = _filteredAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
 
             UpdateAdList();
-        }
-
-        /// <summary>
-        /// EventCallback is used to receive callbacks from the GUI and hand control to a handler that is not subject to the same scoping limitations.
-        /// Event chain is as follows:
-        /// GUI Event -> AddKeywordCallback -> HandleAddKeywordCallback -> OnKeywordAdded
-        /// </summary>
-        public EventCallback<FilterArgs> AddKeywordCallback = new EventCallback<FilterArgs>(null, (FilterArgs args) =>
-        {
-            if(args.keyword != null && args.keyword.text.Length > 0)
-            {
-                OnKeywordAddReceived?.Invoke(null, args);
-            }
-        });
-
-        /// <summary>
-        /// Handler is used to interact with the underlying model and send the response from the model back to the GUI.
-        /// Event chain is as follows:
-        /// GUI Event -> AddKeywordCallback -> HandleAddKeywordCallback -> OnKeywordAdded
-        /// </summary>
-        private void HandleAddKeywordCallback(object? sender, FilterArgs args)
-        {
-            // Handle event
-            // Remove keyword if it is already in the list of keywords
-            Keyword? keyword = _keywords.Where(keyword => keyword.text.ToLower() == args.keyword.text.ToLower()).SingleOrDefault();
-
-            if(keyword != null)
-            {
-                _keywords.Remove(keyword);
-                OnKeywordRemoved?.Invoke(this, new FilterArgs()
-                {
-                    keyword = keyword
-                });
-            }
-
-            // Add new keyword
-            _keywords.Add(args.keyword);
-
-            FilterAds();
-
-            // Send event to GUI
-            OnKeywordAdded?.Invoke(this, new FilterArgs()
-            {
-                keyword = args.keyword
-            });
-        }
-
-        /// <summary>
-        /// EventCallback is used to receive callbacks from the GUI and hand control to a handler that is not subject to the same scoping limitations.
-        /// Event chain is as follows:
-        /// GUI Event -> RemoveKeywordCallback -> HandleRemoveKeywordCallback -> OnKeywordRemoved
-        /// </summary>
-        public EventCallback<FilterArgs> RemoveKeywordCallback = new EventCallback<FilterArgs>(null, (FilterArgs args) =>
-        {
-            OnKeywordRemoveReceived?.Invoke(null, args);
-        });
-
-
-        /// <summary>
-        /// Handler is used to interact with the underlying model and send the response from the model back to the GUI.
-        /// Event chain is as follows:
-        /// GUI Event -> RemoveKeywordCallback -> HandleRemoveKeywordCallback -> OnKeywordRemoved
-        /// </summary>
-        private void HandleRemoveKeywordCallback(object? sender, FilterArgs args)
-        {
-            // Handle event
-            Keyword keyword = _keywords.Single(k => k.text == args.keyword.text);
-            _keywords.Remove(keyword);
-            FilterAds();
-
-            // Send event to GUI
-            OnKeywordRemoved?.Invoke(this, new FilterArgs()
-            {
-                keyword = args.keyword
-            });
         }
     }
 }
