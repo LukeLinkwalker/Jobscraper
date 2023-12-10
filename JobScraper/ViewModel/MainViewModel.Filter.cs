@@ -31,9 +31,11 @@ namespace JobScraper.ViewModel
             PubSub.Get().Subscribe(Topics.ADD_KEYWORD, addKeyword);
             PubSub.Get().Subscribe(Topics.REMOVE_KEYWORD, removeKeyword);
 
-            _scraper.OnAdFetchingProgress += HandleOnAdFetchingProgressEvent;
+            if(_scraper != null)
+            {
+                _scraper.OnAdFetchingProgress += HandleOnAdFetchingProgressEvent;
+            }
 
-            _allAds = _database.GetAds();
             _filteredAds = _allAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
         }
 

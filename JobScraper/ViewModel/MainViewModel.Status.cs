@@ -16,12 +16,15 @@ namespace JobScraper.ViewModel
 
         private void InitStatus()
         {
-            _scraper.OnInitStarted += _scraper_OnInitStarted;
-            _scraper.OnInitDone += _scraper_OnInitDone;
-            _scraper.OnAdScrapingStarted += _scraper_OnAdSrapingStarted;
-            _scraper.OnAdScrapingDone += _scraper_OnAdScrapingDone;
-            _scraper.OnAdFetchingStarted += _scraper_OnAdFectingStarted;
-            _scraper.OnAdFetchingProgress += _scraper_OnAdFetchingProgress;
+            if(_scraper != null)
+            {
+                _scraper.OnInitStarted += _scraper_OnInitStarted;
+                _scraper.OnInitDone += _scraper_OnInitDone;
+                _scraper.OnAdScrapingStarted += _scraper_OnAdSrapingStarted;
+                _scraper.OnAdScrapingDone += _scraper_OnAdScrapingDone;
+                _scraper.OnAdFetchingStarted += _scraper_OnAdFectingStarted;
+                _scraper.OnAdFetchingProgress += _scraper_OnAdFetchingProgress;
+            }
         }
 
         private void _scraper_OnInitStarted(object? sender, System.EventArgs e)

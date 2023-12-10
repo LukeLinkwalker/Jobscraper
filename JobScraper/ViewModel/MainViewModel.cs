@@ -13,12 +13,11 @@ namespace JobScraper.ViewModel
     public partial class MainViewModel
     {
         public IScraper _scraper { get; set; }
-        public Database _database { get; set; }
 
-        public MainViewModel(IScraper scraper, Database database)
+        public MainViewModel(IScraper scraper, List<Ad> ads)
         {
             _scraper = scraper;
-            _database = database;
+            _allAds = ads;
         }
 
         public void Init()
