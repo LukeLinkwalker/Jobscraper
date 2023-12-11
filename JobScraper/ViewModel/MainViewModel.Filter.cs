@@ -16,20 +16,14 @@ namespace JobScraper.ViewModel
 {
     public partial class MainViewModel
     {
-        private PubSub.Callback addKeyword;
-        private PubSub.Callback removeKeyword;
-
         private List<Ad> _allAds = new List<Ad>();
         private List<Ad> _filteredAds = new List<Ad>();
         private List<Keyword> _keywords = new List<Keyword>();
 
         private void InitFilter()
         {
-            addKeyword = AddKeyword;
-            removeKeyword = RemoveKeyword;
-
-            PubSub.Get().Subscribe(Topics.ADD_KEYWORD, addKeyword);
-            PubSub.Get().Subscribe(Topics.REMOVE_KEYWORD, removeKeyword);
+            PubSub.Get().Subscribe(Topics.ADD_KEYWORD, AddKeyword);
+            PubSub.Get().Subscribe(Topics.REMOVE_KEYWORD, RemoveKeyword);
 
             if(_scraper != null)
             {
@@ -81,7 +75,7 @@ namespace JobScraper.ViewModel
             UpdateAdList(ads);
         }
 
-        private List<Ad> FilterAds(List<Ad> ads, List<Keyword> keywords)
+        public List<Ad> FilterAds(List<Ad> ads, List<Keyword> keywords)
         {
             List<Ad> filteredAds = ads;
 

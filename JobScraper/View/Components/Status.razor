@@ -15,12 +15,9 @@
 
     public string visibility { get; set; }
 
-    private PubSub.Callback statusChanged;
-
     protected override async Task OnInitializedAsync()
     {
-        statusChanged = StatusChanged;
-        PubSub.Get().Subscribe(Topics.STATUS_CHANGED, statusChanged);
+        PubSub.Get().Subscribe(Topics.STATUS_CHANGED, StatusChanged);
         visibility = "none";
     }
 

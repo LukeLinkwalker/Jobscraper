@@ -46,14 +46,11 @@
 
     public List<Ad> ads { get; set; }
 
-    private PubSub.Callback adProcessed;
-
     protected override async Task OnInitializedAsync()
     {
         ads = new List<Ad>();
 
-        adProcessed = AdProcessed;
-        PubSub.Get().Subscribe(Topics.AD_PROCESSED, adProcessed);
+        PubSub.Get().Subscribe(Topics.AD_PROCESSED, AdProcessed);
     }
 
     private void AdProcessedHandler(object? sender, AdListArgs args)

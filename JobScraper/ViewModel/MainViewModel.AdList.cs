@@ -18,8 +18,7 @@ namespace JobScraper.ViewModel
 
         private void InitAdList()
         {
-            openTarget = OpenTarget;
-            PubSub.Get().Subscribe(Topics.OPEN_TARGET, openTarget);
+            PubSub.Get().Subscribe(Topics.OPEN_TARGET, OpenTarget);
         }
 
         public void ForceUpdateAdList()

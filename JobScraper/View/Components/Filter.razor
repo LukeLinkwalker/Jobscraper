@@ -41,10 +41,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        addedKeyword = AddedKeyword;
-        removedKeyword = RemovedKeyword;
-        PubSub.Get().Subscribe(Topics.ADDED_KEYWORD, addedKeyword);
-        PubSub.Get().Subscribe(Topics.REMOVED_KEYWORD, removedKeyword);
+        PubSub.Get().Subscribe(Topics.ADDED_KEYWORD, AddedKeyword);
+        PubSub.Get().Subscribe(Topics.REMOVED_KEYWORD, RemovedKeyword);
     }
 
     private async void AddKeyword()
