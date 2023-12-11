@@ -1,5 +1,6 @@
 ﻿using JobScraper.Model.Data;
 using JobScraper.Model.Filter;
+using JobScraper.Model.Scraping;
 using JobScraper.Model.Scraping.Events;
 using JobScraper.Utils;
 using JobScraper.ViewModel.EventArgs;
@@ -14,26 +15,41 @@ using System.Threading.Tasks;
 
 namespace JobScraper.ViewModel
 {
-    public partial class MainViewModel
+    public class Filter
     {
         private List<Ad> _allAds = new List<Ad>();
         private List<Ad> _filteredAds = new List<Ad>();
         private List<Keyword> _keywords = new List<Keyword>();
+        private IScraper _scraper = null;
 
-        private void InitFilter()
+        public Filter(IScraper scraper, List<Ad> allAds)
         {
+            _scraper = scraper;
+            _allAds = allAds;
+
             PubSub.Get().Subscribe(Topics.ADD_KEYWORD, AddKeyword);
             PubSub.Get().Subscribe(Topics.REMOVE_KEYWORD, RemoveKeyword);
 
-            if(_scraper != null)
-            {
-                _scraper.OnAdFetchingProgress += HandleOnAdFetchingProgressEvent;
-            }
+            _scraper.OnAdFetchingProgress += HandleOnAdFetchingProgressEvent;
 
             _filteredAds = _allAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
+            UpdateAdList(_filteredAds);
         }
 
-        private void AddKeyword(dynamic data) 
+        public void ForceUpdateAdList()
+        {
+            UpdateAdList(_allAds);
+        }
+
+        public void UpdateAdList(List<Ad> ads)
+        {
+            AdListArgs args = new AdListArgs();
+            args.ads = ads;
+
+            PubSub.Get().Publish(Topics.AD_PROCESSED, args);
+        }
+
+        public void AddKeyword(dynamic data) 
         {
             FilterArgs args = data as FilterArgs;
 
@@ -53,7 +69,7 @@ namespace JobScraper.ViewModel
             PubSub.Get().Publish(Topics.ADDED_KEYWORD, new FilterArgs { keyword = args.keyword });
         }
 
-        private void RemoveKeyword(dynamic data)
+        public void RemoveKeyword(dynamic data)
         {
             FilterArgs args = data as FilterArgs;
 
@@ -66,7 +82,7 @@ namespace JobScraper.ViewModel
             PubSub.Get().Publish(Topics.REMOVED_KEYWORD, new FilterArgs { keyword = args.keyword });
         }
 
-        private void HandleOnAdFetchingProgressEvent(object? sender, System.EventArgs e)
+        public void HandleOnAdFetchingProgressEvent(object? sender, System.EventArgs e)
         {
             AdFetchingProgressEvent pe = (AdFetchingProgressEvent) e;
             _allAds.Add(pe.fetchedAd);

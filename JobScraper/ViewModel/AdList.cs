@@ -12,37 +12,14 @@ using System.Threading.Tasks;
 
 namespace JobScraper.ViewModel
 {
-    public partial class MainViewModel
+    public class AdList
     {
-        private PubSub.Callback openTarget;
-
-        private void InitAdList()
+        public AdList()
         {
             PubSub.Get().Subscribe(Topics.OPEN_TARGET, OpenTarget);
         }
 
-        public void ForceUpdateAdList()
-        {
-            UpdateAdList();
-        }
-
-        private void UpdateAdList()
-        {
-            AdListArgs args = new AdListArgs();
-            args.ads = _filteredAds;
-
-            PubSub.Get().Publish(Topics.AD_PROCESSED, args);
-        }
-
-        private void UpdateAdList(List<Ad> ads)
-        {
-            AdListArgs args = new AdListArgs();
-            args.ads = ads;
-
-            PubSub.Get().Publish(Topics.AD_PROCESSED, args);
-        }
-
-        private void OpenTarget(dynamic data)
+        public void OpenTarget(dynamic data)
         {
             OpenTargetArgs args = data as OpenTargetArgs;
 

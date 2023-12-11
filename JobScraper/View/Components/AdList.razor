@@ -41,15 +41,12 @@
 </ul>
 
 @code {
-    [Parameter]
-    public MainViewModel viewModel { get; set; }
-
     public List<Ad> ads { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         ads = new List<Ad>();
-
+        
         PubSub.Get().Subscribe(Topics.AD_PROCESSED, AdProcessed);
     }
 

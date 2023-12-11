@@ -9,6 +9,10 @@ using JobScraper.Model.Scraping;
 using JobScraper.Model.Scraping.Events;
 using JobScraper.Model.Data;
 
+using AdList = JobScraper.ViewModel.AdList;
+using Filter = JobScraper.ViewModel.Filter;
+using Status = JobScraper.ViewModel.Status;
+
 namespace JobScraper
 {
     public partial class Host : Form
@@ -22,12 +26,12 @@ namespace JobScraper
 
             database.SetAdFetchedCallback(jobIndexScraper);
 
-            MainViewModel viewModel = new MainViewModel(jobIndexScraper, database.GetAds());
-            viewModel.Init();
+            AdList adList = new AdList();
+            Filter filter = new Filter(jobIndexScraper, database.GetAds());
+            Status status = new Status(jobIndexScraper);
 
             var services = new ServiceCollection();
             services.AddWindowsFormsBlazorWebView();
-
             services.AddBlazorWebViewDeveloperTools();
 
             blazorWebView.HostPage = "wwwroot\\index.html";
@@ -35,9 +39,8 @@ namespace JobScraper
             blazorWebView.RootComponents.Add<Main>("#app",
                 new Dictionary<string, object?>
                 {
-                    { "viewModel", viewModel },
                     { "DoneLoadingCallback", new EventCallback(null, () => {
-                        viewModel.ForceUpdateAdList();
+                        filter.ForceUpdateAdList();
                         jobIndexScraper.Init();
                         jobIndexScraper.Start();
                     })}

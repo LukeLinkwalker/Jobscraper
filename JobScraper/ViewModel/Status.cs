@@ -10,21 +10,20 @@ using System.Threading.Tasks;
 
 namespace JobScraper.ViewModel
 {
-    public partial class MainViewModel
+    public class Status
     {
         private int _numberOfAdsToScrape;
+        private IScraper _scraper;
 
-        private void InitStatus()
+        public Status(IScraper scraper)
         {
-            if(_scraper != null)
-            {
-                _scraper.OnInitStarted += _scraper_OnInitStarted;
-                _scraper.OnInitDone += _scraper_OnInitDone;
-                _scraper.OnAdScrapingStarted += _scraper_OnAdSrapingStarted;
-                _scraper.OnAdScrapingDone += _scraper_OnAdScrapingDone;
-                _scraper.OnAdFetchingStarted += _scraper_OnAdFectingStarted;
-                _scraper.OnAdFetchingProgress += _scraper_OnAdFetchingProgress;
-            }
+            _scraper = scraper;
+            _scraper.OnInitStarted += _scraper_OnInitStarted;
+            _scraper.OnInitDone += _scraper_OnInitDone;
+            _scraper.OnAdScrapingStarted += _scraper_OnAdSrapingStarted;
+            _scraper.OnAdScrapingDone += _scraper_OnAdScrapingDone;
+            _scraper.OnAdFetchingStarted += _scraper_OnAdFectingStarted;
+            _scraper.OnAdFetchingProgress += _scraper_OnAdFetchingProgress;
         }
 
         private void _scraper_OnInitStarted(object? sender, System.EventArgs e)
