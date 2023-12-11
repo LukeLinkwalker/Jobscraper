@@ -6,8 +6,10 @@ using JobScraper.Utils;
 using JobScraper.ViewModel.EventArgs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.VisualBasic;
+using Microsoft.Web.WebView2.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -30,7 +32,10 @@ namespace JobScraper.ViewModel
             PubSub.Get().Subscribe(Topics.ADD_KEYWORD, AddKeyword);
             PubSub.Get().Subscribe(Topics.REMOVE_KEYWORD, RemoveKeyword);
 
-            _scraper.OnAdFetchingProgress += HandleOnAdFetchingProgressEvent;
+            if(scraper != null)
+            {
+                _scraper.OnAdFetchingProgress += HandleOnAdFetchingProgressEvent;
+            }
 
             _filteredAds = _allAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
             UpdateAdList(_filteredAds);
@@ -128,6 +133,21 @@ namespace JobScraper.ViewModel
             filteredAds = filteredAds.OrderByDescending(ad => ad.GetTimestamp()).ToList();
 
             return filteredAds;
+        }
+
+        public ReadOnlyCollection<Ad> GetAllAdsList()
+        {
+            return new ReadOnlyCollection<Ad>(_allAds);
+        }
+
+        public ReadOnlyCollection<Ad> GetFilteredAdsList()
+        {
+            return new ReadOnlyCollection<Ad>(_filteredAds);
+        }
+
+        public ReadOnlyCollection<Keyword> GetKeywords()
+        {
+            return new ReadOnlyCollection<Keyword>(_keywords);
         }
     }
 }
