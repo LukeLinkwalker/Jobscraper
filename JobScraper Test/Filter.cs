@@ -237,5 +237,33 @@ namespace JobScraper_Test
             List<Ad> adsWithKeyword = filteredAds.Where(ad => ad.Keywords.Where(keyword => keyword.type == Keyword.Type.Should).Count() > 0).ToList();
             Assert.That(adsWithKeyword.Count, Is.EqualTo(1));
         }
+
+        [Test, Order(200)]
+        public void FilteringWithoutKeywords()
+        {
+            List<Ad> filteredAds = filter.FilterAds(ads, keywords);
+            Assert.That(filteredAds.Count, Is.EqualTo(4));
+        }
+
+        [Test, Order(201)]
+        public void FilteringWithoutAds()
+        {
+            Keyword keyword = new Keyword
+            {
+                text = "Amet",
+                type = Keyword.Type.Should
+            };
+            keywords.Add(keyword);
+
+            List<Ad> filteredAds = filter.FilterAds(new List<Ad>(), keywords);
+            Assert.That(filteredAds.Count, Is.EqualTo(0));
+        }
+
+        [Test, Order(202)]
+        public void FilteringWithoutAdsAndKeywords()
+        {
+            List<Ad> filteredAds = filter.FilterAds(new List<Ad>(), new List<Keyword>());
+            Assert.That(filteredAds.Count, Is.EqualTo(0));
+        }
     }
 }
